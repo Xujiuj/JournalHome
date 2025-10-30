@@ -1,0 +1,40 @@
+package com.kstt.application.articles.status.strategy;
+
+import com.kstt.application.articles.status.model.ArticleStatusChangeRequest;
+import com.kstt.articles.entity.Article;
+import com.kstt.articles.service.ArticleProcessService;
+import com.kstt.common.enums.ArticleStatusEnum;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+
+/**
+ * 将文章状态切换为审稿中
+ */
+@Component
+public class UnderReviewStatusStrategy extends AbstractArticleStatusStrategy {
+
+    public UnderReviewStatusStrategy(ArticleProcessService articleProcessService) {
+        super(articleProcessService);
+    }
+
+    @Override
+    public ArticleStatusEnum targetStatus() {
+        return ArticleStatusEnum.UNDER_REVIEW;
+    }
+
+    @Override
+    public void validate(Article article, ArticleStatusChangeRequest request) {
+        assertArticleExists(article);
+        assertCurrentStatusIn(article, ArticleStatusEnum.SUBMITTED, ArticleStatusEnum.REVISION_REQUESTED);
+    }
+
+    @Override
+    public void apply(Article article, ArticleStatusChangeRequest request, ArticleStatusEnum previousStatus) {
+        article.setArticleStatusId(targetStatus().getStatusId());
+        if (article.getArticleSubmitTime() == null) {
+            article.setArticleSubmitTime(LocalDateTime.now());
+        }
+        recordProcess(article, request, previousStatus, null, request.getRemark());
+    }
+}

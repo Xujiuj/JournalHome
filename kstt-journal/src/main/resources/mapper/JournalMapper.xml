@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.journal.mapper.JournalMapper">
+
+    <resultMap type="Journal" id="JournalResult">
+        <id property="journalId" column="journal_id"/>
+        <result property="journalVolume" column="journal_volume"/>
+        <result property="journalIssue" column="journal_issue"/>
+        <result property="journalPublishDate" column="journal_publish_date"/>
+        <result property="journalStatus" column="journal_status"/>
+        <result property="journalTheme" column="journal_theme"/>
+        <result property="journalDescription" column="journal_description"/>
+        <result property="journalCover" column="journal_cover"/>
+        <result property="journalPdf" column="journal_pdf"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectJournalVo">
+        select journal_id, journal_volume, journal_issue, journal_publish_date, journal_status,
+               journal_theme, journal_description, journal_cover, journal_pdf,
+               create_by, create_time, update_by, update_time, remark
+        from journal
+    </sql>
+
+    <select id="selectJournalList" parameterType="Journal" resultMap="JournalResult">
+        <include refid="selectJournalVo"/>
+        <where>
+            <if test="journalVolume != null"> and journal_volume = #{journalVolume}</if>
+            <if test="journalIssue != null"> and journal_issue = #{journalIssue}</if>
+            <if test="journalStatus != null"> and journal_status = #{journalStatus}</if>
+            <if test="journalTheme != null and journalTheme != ''"> and journal_theme like concat('%', #{journalTheme}, '%')</if>
+            <if test="journalDescription != null and journalDescription != ''"> and journal_description like concat('%', #{journalDescription}, '%')</if>
+        </where>
+        order by journal_publish_date desc, journal_volume desc, journal_issue desc
+    </select>
+
+    <select id="selectJournalByJournalId" parameterType="Long" resultMap="JournalResult">
+        <include refid="selectJournalVo"/>
+        where journal_id = #{journalId}
+    </select>
+
+    <insert id="insertJournal" parameterType="Journal" useGeneratedKeys="true" keyProperty="journalId">
+        insert into journal
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="journalVolume != null">journal_volume,</if>
+            <if test="journalIssue != null">journal_issue,</if>
+            <if test="journalPublishDate != null">journal_publish_date,</if>
+            <if test="journalStatus != null">journal_status,</if>
+            <if test="journalTheme != null">journal_theme,</if>
+            <if test="journalDescription != null">journal_description,</if>
+            <if test="journalCover != null">journal_cover,</if>
+            <if test="journalPdf != null">journal_pdf,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="journalVolume != null">#{journalVolume},</if>
+            <if test="journalIssue != null">#{journalIssue},</if>
+            <if test="journalPublishDate != null">#{journalPublishDate},</if>
+            <if test="journalStatus != null">#{journalStatus},</if>
+            <if test="journalTheme != null">#{journalTheme},</if>
+            <if test="journalDescription != null">#{journalDescription},</if>
+            <if test="journalCover != null">#{journalCover},</if>
+            <if test="journalPdf != null">#{journalPdf},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateJournal" parameterType="Journal">
+        update journal
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="journalVolume != null">journal_volume = #{journalVolume},</if>
+            <if test="journalIssue != null">journal_issue = #{journalIssue},</if>
+            <if test="journalPublishDate != null">journal_publish_date = #{journalPublishDate},</if>
+            <if test="journalStatus != null">journal_status = #{journalStatus},</if>
+            <if test="journalTheme != null">journal_theme = #{journalTheme},</if>
+            <if test="journalDescription != null">journal_description = #{journalDescription},</if>
+            <if test="journalCover != null">journal_cover = #{journalCover},</if>
+            <if test="journalPdf != null">journal_pdf = #{journalPdf},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where journal_id = #{journalId}
+    </update>
+
+    <delete id="deleteJournalById" parameterType="Long">
+        delete from journal where journal_id = #{journalId}
+    </delete>
+
+    <delete id="deleteJournalByIds" parameterType="String">
+        delete from journal where journal_id in
+        <foreach item="journalId" collection="array" open="(" separator="," close=")">
+            #{journalId}
+        </foreach>
+    </delete>
+</mapper>

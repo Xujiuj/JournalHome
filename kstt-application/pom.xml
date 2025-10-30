@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.kstt</groupId>
+        <artifactId>journal-management</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>kstt-application</artifactId>
+    <name>kstt-application</name>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- Domain modules -->
+        <dependency>
+            <groupId>com.kstt</groupId>
+            <artifactId>kstt-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kstt</groupId>
+            <artifactId>kstt-sys</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kstt</groupId>
+            <artifactId>kstt-journal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kstt</groupId>
+            <artifactId>kstt-articles</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kstt</groupId>
+            <artifactId>kstt-notices</artifactId>
+        </dependency>
+
+        <!-- Spring context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- PageHelper -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+
+        <!-- Spring Data Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- Spring Transaction -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+    </dependencies>
+</project>

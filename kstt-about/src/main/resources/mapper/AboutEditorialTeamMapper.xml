@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.about.mapper.AboutEditorialTeamMapper">
+
+    <resultMap type="AboutEditorialTeam" id="AboutEditorialTeamResult">
+        <id property="teamId" column="team_id"/>
+        <result property="teamUserId" column="team_user_id"/>
+        <result property="teamTitle" column="team_title"/>
+        <result property="teamOrder" column="team_order"/>
+        <result property="teamStatus" column="team_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectAboutEditorialTeamVo">
+        select team_id, team_user_id, team_title, team_order, team_status, 
+               create_by, create_time, update_by, update_time, remark 
+        from about_editorial_team
+    </sql>
+
+    <select id="selectAboutEditorialTeamList" parameterType="AboutEditorialTeam" resultMap="AboutEditorialTeamResult">
+        <include refid="selectAboutEditorialTeamVo"/>
+        <where>
+            <if test="teamUserId != null">
+                AND team_user_id = #{teamUserId}
+            </if>
+            <if test="teamTitle != null and teamTitle != ''">
+                AND team_title like concat('%', #{teamTitle}, '%')
+            </if>
+            <if test="teamStatus != null">
+                AND team_status = #{teamStatus}
+            </if>
+        </where>
+        order by team_order asc, team_id asc
+    </select>
+
+    <select id="selectAboutEditorialTeamByTeamId" parameterType="Long" resultMap="AboutEditorialTeamResult">
+        <include refid="selectAboutEditorialTeamVo"/>
+        where team_id = #{teamId}
+    </select>
+
+    <insert id="insertAboutEditorialTeam" parameterType="AboutEditorialTeam" useGeneratedKeys="true" keyProperty="teamId">
+        insert into about_editorial_team
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="teamUserId != null">team_user_id,</if>
+            <if test="teamTitle != null and teamTitle != ''">team_title,</if>
+            <if test="teamOrder != null">team_order,</if>
+            <if test="teamStatus != null">team_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="teamUserId != null">#{teamUserId},</if>
+            <if test="teamTitle != null and teamTitle != ''">#{teamTitle},</if>
+            <if test="teamOrder != null">#{teamOrder},</if>
+            <if test="teamStatus != null">#{teamStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAboutEditorialTeam" parameterType="AboutEditorialTeam">
+        update about_editorial_team
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="teamUserId != null">team_user_id = #{teamUserId},</if>
+            <if test="teamTitle != null and teamTitle != ''">team_title = #{teamTitle},</if>
+            <if test="teamOrder != null">team_order = #{teamOrder},</if>
+            <if test="teamStatus != null">team_status = #{teamStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where team_id = #{teamId}
+    </update>
+
+    <delete id="deleteAboutEditorialTeamById" parameterType="Long">
+        delete from about_editorial_team where team_id = #{teamId}
+    </delete>
+
+    <delete id="deleteAboutEditorialTeamByTeamIds" parameterType="String">
+        delete from about_editorial_team where team_id in
+        <foreach item="teamId" collection="teamIds" open="(" separator="," close=")">
+            #{teamId}
+        </foreach>
+    </delete>
+
+</mapper>
+

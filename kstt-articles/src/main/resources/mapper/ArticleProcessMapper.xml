@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.articles.mapper.ArticleProcessMapper">
+    
+    <resultMap type="ArticleProcess" id="ArticleProcessResult">
+        <id property="processId" column="process_id"/>
+        <result property="processArticleId" column="process_article_id"/>
+        <result property="processCurrentStatusId" column="process_current_status_id"/>
+        <result property="processPreviousStatusId" column="process_previous_status_id"/>
+        <result property="processEditorId" column="process_editor_id"/>
+        <result property="processAssignTime" column="process_assign_time"/>
+        <result property="processDueDate" column="process_due_date"/>
+        <result property="processPriority" column="process_priority"/>
+        <result property="processNotes" column="process_notes"/>
+        <result property="processDecision" column="process_decision"/>
+        <result property="processDecisionReason" column="process_decision_reason"/>
+        <result property="processDecisionTime" column="process_decision_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <!-- 关联查询 -->
+        <association property="processArticle" column="process_article_id"
+                     select="com.kstt.articles.mapper.ArticleMapper.selectArticleByPaperId"/>
+        <association property="processEditor" column="process_editor_id"
+                     select="com.kstt.sys.mapper.SysUserMapper.selectUserByUserId"/>
+        <association property="processCurrentStatus" column="process_current_status_id"
+                     select="com.kstt.articles.mapper.ArticleStatusMapper.selectStatusByStatusId"/>
+        <association property="processPreviousStatus" column="process_previous_status_id"
+                     select="com.kstt.articles.mapper.ArticleStatusMapper.selectStatusByStatusId"/>
+    </resultMap>
+
+    <sql id="selectArticleProcessVo">
+        select process_id, process_article_id, process_current_status_id, process_previous_status_id,
+               process_editor_id, process_assign_time, process_due_date, process_priority, process_notes,
+               process_decision, process_decision_reason, process_decision_time,
+               create_by, create_time, update_by, update_time, remark
+        from article_process
+    </sql>
+
+    <select id="selectProcessList" parameterType="ArticleProcess" resultMap="ArticleProcessResult">
+        <include refid="selectArticleProcessVo"/>
+        <where>  
+            <if test="processArticleId != null"> and process_article_id = #{processArticleId}</if>
+            <if test="processCurrentStatusId != null"> and process_current_status_id = #{processCurrentStatusId}</if>
+            <if test="processEditorId != null"> and process_editor_id = #{processEditorId}</if>
+        </where>
+        order by process_assign_time desc
+    </select>
+    
+    <select id="selectProcessByProcessId" parameterType="Long" resultMap="ArticleProcessResult">
+        <include refid="selectArticleProcessVo"/>
+        where process_id = #{processId}
+    </select>
+        
+    <insert id="insertProcess" parameterType="ArticleProcess" useGeneratedKeys="true" keyProperty="processId">
+        insert into article_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="processArticleId != null">process_article_id,</if>
+            <if test="processCurrentStatusId != null">process_current_status_id,</if>
+            <if test="processPreviousStatusId != null">process_previous_status_id,</if>
+            <if test="processEditorId != null">process_editor_id,</if>
+            <if test="processAssignTime != null">process_assign_time,</if>
+            <if test="processDueDate != null">process_due_date,</if>
+            <if test="processPriority != null">process_priority,</if>
+            <if test="processNotes != null">process_notes,</if>
+            <if test="processDecision != null">process_decision,</if>
+            <if test="processDecisionReason != null">process_decision_reason,</if>
+            <if test="processDecisionTime != null">process_decision_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="processArticleId != null">#{processArticleId},</if>
+            <if test="processCurrentStatusId != null">#{processCurrentStatusId},</if>
+            <if test="processPreviousStatusId != null">#{processPreviousStatusId},</if>
+            <if test="processEditorId != null">#{processEditorId},</if>
+            <if test="processAssignTime != null">#{processAssignTime},</if>
+            <if test="processDueDate != null">#{processDueDate},</if>
+            <if test="processPriority != null">#{processPriority},</if>
+            <if test="processNotes != null">#{processNotes},</if>
+            <if test="processDecision != null">#{processDecision},</if>
+            <if test="processDecisionReason != null">#{processDecisionReason},</if>
+            <if test="processDecisionTime != null">#{processDecisionTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProcess" parameterType="ArticleProcess">
+        update article_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="processArticleId != null">process_article_id = #{processArticleId},</if>
+            <if test="processCurrentStatusId != null">process_current_status_id = #{processCurrentStatusId},</if>
+            <if test="processPreviousStatusId != null">process_previous_status_id = #{processPreviousStatusId},</if>
+            <if test="processEditorId != null">process_editor_id = #{processEditorId},</if>
+            <if test="processAssignTime != null">process_assign_time = #{processAssignTime},</if>
+            <if test="processDueDate != null">process_due_date = #{processDueDate},</if>
+            <if test="processPriority != null">process_priority = #{processPriority},</if>
+            <if test="processNotes != null">process_notes = #{processNotes},</if>
+            <if test="processDecision != null">process_decision = #{processDecision},</if>
+            <if test="processDecisionReason != null">process_decision_reason = #{processDecisionReason},</if>
+            <if test="processDecisionTime != null">process_decision_time = #{processDecisionTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where process_id = #{processId}
+    </update>
+
+    <delete id="deleteProcessById" parameterType="Long">
+        delete from article_process where process_id = #{processId}
+    </delete>
+
+    <delete id="deleteProcessByIds" parameterType="String">
+        delete from article_process where process_id in 
+        <foreach item="processId" collection="array" open="(" separator="," close=")">
+            #{processId}
+        </foreach>
+    </delete>
+</mapper>

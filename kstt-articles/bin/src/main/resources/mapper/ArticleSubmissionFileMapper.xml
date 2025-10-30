@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.articles.mapper.ArticleSubmissionFileMapper">
+    
+    <resultMap type="ArticleSubmissionFile" id="ArticleSubmissionFileResult">
+        <id property="fileId"    column="file_id"    />
+        <result property="fileArticleId"    column="file_article_id"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="fileOriginalName"    column="file_original_name"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="fileSize"    column="file_size"    />
+        <result property="fileTypeId"    column="file_type_id"    />
+        <result property="fileMimeType"    column="file_mime_type"    />
+        <result property="fileDescription"    column="file_description"    />
+        <result property="fileUploadTime"    column="file_upload_time"    />
+        <result property="fileVersion"    column="file_version"    />
+        <result property="fileIsPrimary"    column="file_is_primary"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectArticleSubmissionFileVo">
+        select file_id, file_article_id, file_name, file_original_name, file_path, file_size, 
+               file_type_id, file_mime_type, file_description, file_upload_time, file_version, 
+               file_is_primary, create_time, update_time 
+        from article_submission_file
+    </sql>
+
+    <select id="selectFileList" parameterType="ArticleSubmissionFile" resultMap="ArticleSubmissionFileResult">
+        <include refid="selectArticleSubmissionFileVo"/>
+        <where>  
+            <if test="fileArticleId != null "> and file_article_id = #{fileArticleId}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="fileTypeId != null "> and file_type_id = #{fileTypeId}</if>
+            <if test="fileIsPrimary != null "> and file_is_primary = #{fileIsPrimary}</if>
+        </where>
+        order by file_upload_time desc
+    </select>
+    
+    <select id="selectFileByFileId" parameterType="Long" resultMap="ArticleSubmissionFileResult">
+        <include refid="selectArticleSubmissionFileVo"/>
+        where file_id = #{fileId}
+    </select>
+    
+    <select id="selectFilesByArticleId" parameterType="Long" resultMap="ArticleSubmissionFileResult">
+        <include refid="selectArticleSubmissionFileVo"/>
+        where file_article_id = #{articleId}
+        order by file_is_primary desc, file_upload_time desc
+    </select>
+        
+    <insert id="insertFile" parameterType="ArticleSubmissionFile" useGeneratedKeys="true" keyProperty="fileId">
+        insert into article_submission_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fileArticleId != null">file_article_id,</if>
+            <if test="fileName != null and fileName != ''">file_name,</if>
+            <if test="fileOriginalName != null and fileOriginalName != ''">file_original_name,</if>
+            <if test="filePath != null and filePath != ''">file_path,</if>
+            <if test="fileSize != null">file_size,</if>
+            <if test="fileTypeId != null">file_type_id,</if>
+            <if test="fileMimeType != null">file_mime_type,</if>
+            <if test="fileDescription != null">file_description,</if>
+            <if test="fileUploadTime != null">file_upload_time,</if>
+            <if test="fileVersion != null">file_version,</if>
+            <if test="fileIsPrimary != null">file_is_primary,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fileArticleId != null">#{fileArticleId},</if>
+            <if test="fileName != null and fileName != ''">#{fileName},</if>
+            <if test="fileOriginalName != null and fileOriginalName != ''">#{fileOriginalName},</if>
+            <if test="filePath != null and filePath != ''">#{filePath},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="fileTypeId != null">#{fileTypeId},</if>
+            <if test="fileMimeType != null">#{fileMimeType},</if>
+            <if test="fileDescription != null">#{fileDescription},</if>
+            <if test="fileUploadTime != null">#{fileUploadTime},</if>
+            <if test="fileVersion != null">#{fileVersion},</if>
+            <if test="fileIsPrimary != null">#{fileIsPrimary},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFile" parameterType="ArticleSubmissionFile">
+        update article_submission_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fileArticleId != null">file_article_id = #{fileArticleId},</if>
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="fileOriginalName != null and fileOriginalName != ''">file_original_name = #{fileOriginalName},</if>
+            <if test="filePath != null and filePath != ''">file_path = #{filePath},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+            <if test="fileTypeId != null">file_type_id = #{fileTypeId},</if>
+            <if test="fileMimeType != null">file_mime_type = #{fileMimeType},</if>
+            <if test="fileDescription != null">file_description = #{fileDescription},</if>
+            <if test="fileUploadTime != null">file_upload_time = #{fileUploadTime},</if>
+            <if test="fileVersion != null">file_version = #{fileVersion},</if>
+            <if test="fileIsPrimary != null">file_is_primary = #{fileIsPrimary},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where file_id = #{fileId}
+    </update>
+
+    <delete id="deleteFileById" parameterType="Long">
+        delete from article_submission_file where file_id = #{fileId}
+    </delete>
+
+    <delete id="deleteFileByIds" parameterType="String">
+        delete from article_submission_file where file_id in 
+        <foreach item="fileId" collection="array" open="(" separator="," close=")">
+            #{fileId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteFilesByArticleId" parameterType="Long">
+        delete from article_submission_file where file_article_id = #{articleId}
+    </delete>
+</mapper>
+

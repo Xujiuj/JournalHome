@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.contact.mapper.ContactFaqMapper">
+    
+    <resultMap type="ContactFaq" id="ContactFaqResult">
+        <id property="faqId" column="faq_id"/>
+        <result property="faqQuestion" column="faq_question"/>
+        <result property="faqAnswer" column="faq_answer"/>
+        <result property="faqOrder" column="faq_order"/>
+        <result property="faqStatus" column="faq_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectContactFaqVo">
+        select faq_id, faq_question, faq_answer, faq_order, faq_status,
+               create_by, create_time, update_by, update_time, remark
+        from contact_faq
+    </sql>
+
+    <select id="selectFaqList" parameterType="ContactFaq" resultMap="ContactFaqResult">
+        <include refid="selectContactFaqVo"/>
+        <where>
+            <if test="faqQuestion != null  and faqQuestion != ''"> and faq_question like concat('%', #{faqQuestion}, '%')</if>
+            <if test="faqAnswer != null  and faqAnswer != ''"> and faq_answer like concat('%', #{faqAnswer}, '%')</if>
+            <if test="faqStatus != null "> and faq_status = #{faqStatus}</if>
+        </where>
+        order by faq_order asc, create_time desc
+    </select>
+
+    <select id="selectFaqByFaqId" parameterType="Long" resultMap="ContactFaqResult">
+        <include refid="selectContactFaqVo"/>
+        where faq_id = #{faqId}
+    </select>
+
+    <insert id="insertFaq" parameterType="ContactFaq" useGeneratedKeys="true" keyProperty="faqId">
+        insert into contact_faq
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="faqQuestion != null and faqQuestion != ''">faq_question,</if>
+            <if test="faqAnswer != null and faqAnswer != ''">faq_answer,</if>
+            <if test="faqOrder != null">faq_order,</if>
+            <if test="faqStatus != null">faq_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="faqQuestion != null and faqQuestion != ''">#{faqQuestion},</if>
+            <if test="faqAnswer != null and faqAnswer != ''">#{faqAnswer},</if>
+            <if test="faqOrder != null">#{faqOrder},</if>
+            <if test="faqStatus != null">#{faqStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFaq" parameterType="ContactFaq">
+        update contact_faq
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="faqQuestion != null and faqQuestion != ''">faq_question = #{faqQuestion},</if>
+            <if test="faqAnswer != null and faqAnswer != ''">faq_answer = #{faqAnswer},</if>
+            <if test="faqOrder != null">faq_order = #{faqOrder},</if>
+            <if test="faqStatus != null">faq_status = #{faqStatus},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where faq_id = #{faqId}
+    </update>
+
+    <delete id="deleteFaqById" parameterType="Long">
+        delete from contact_faq where faq_id = #{faqId}
+    </delete>
+
+    <delete id="deleteFaqByIds" parameterType="String">
+        delete from contact_faq where faq_id in 
+        <foreach item="faqId" collection="array" open="(" separator="," close=")">
+            #{faqId}
+        </foreach>
+    </delete>
+</mapper>

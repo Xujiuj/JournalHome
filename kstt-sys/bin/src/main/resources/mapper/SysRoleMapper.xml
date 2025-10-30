@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.sys.mapper.SysRoleMapper">
+
+    <resultMap type="SysRole" id="SysRoleResult">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleSort" column="role_sort"/>
+        <result property="roleScope" column="role_scope"/>
+        <result property="roleStatus" column="role_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectSysRoleVo">
+        select role_id, role_name, role_sort, role_scope, role_status, create_by, create_time, update_by, update_time, remark from sys_role
+    </sql>
+
+    <select id="selectRoleList" parameterType="SysRole" resultMap="SysRoleResult">
+        <include refid="selectSysRoleVo"/>
+        <where>
+            <if test="roleName != null and roleName != ''"> and role_name like concat('%', #{roleName}, '%')</if>
+            <if test="roleStatus != null"> and role_status = #{roleStatus}</if>
+        </where>
+        order by role_sort
+    </select>
+
+    <select id="selectRoleByRoleId" parameterType="Long" resultMap="SysRoleResult">
+        <include refid="selectSysRoleVo"/>
+        where role_id = #{roleId}
+    </select>
+
+    <insert id="insertRole" parameterType="SysRole" useGeneratedKeys="true" keyProperty="roleId">
+        insert into sys_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleName != null and roleName != ''">role_name,</if>
+            <if test="roleSort != null">role_sort,</if>
+            <if test="roleScope != null">role_scope,</if>
+            <if test="roleStatus != null">role_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleName != null and roleName != ''">#{roleName},</if>
+            <if test="roleSort != null">#{roleSort},</if>
+            <if test="roleScope != null">#{roleScope},</if>
+            <if test="roleStatus != null">#{roleStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateRole" parameterType="SysRole">
+        update sys_role
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="roleName != null and roleName != ''">role_name = #{roleName},</if>
+            <if test="roleSort != null">role_sort = #{roleSort},</if>
+            <if test="roleScope != null">role_scope = #{roleScope},</if>
+            <if test="roleStatus != null">role_status = #{roleStatus},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where role_id = #{roleId}
+    </update>
+
+    <delete id="deleteRoleByRoleId" parameterType="Long">
+        delete from sys_role where role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteRoleByRoleIds" parameterType="String">
+        delete from sys_role where role_id in
+        <foreach item="roleId" collection="array" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+</mapper>

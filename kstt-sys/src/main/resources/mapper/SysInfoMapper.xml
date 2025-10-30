@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.sys.mapper.SysInfoMapper">
+
+    <resultMap type="SysInfo" id="SysInfoResult">
+        <id property="infoId" column="info_id"/>
+        <result property="infoIssn" column="info_issn"/>
+        <result property="infoName" column="info_name"/>
+        <result property="infoSimpleName" column="info_simple_name"/>
+        <result property="infoComment" column="info_comment"/>
+        <result property="infoMission" column="info_mission"/>
+        <result property="infoImpactFactor" column="info_impact_factor"/>
+        <result property="infoFoundedYear" column="info_founded_year"/>
+        <result property="infoPublisher" column="info_publisher"/>
+        <result property="infoWebsite" column="info_website"/>
+        <result property="infoEmail" column="info_email"/>
+        <result property="infoPhone" column="info_phone"/>
+        <result property="infoAddress" column="info_address"/>
+        <result property="infoLogo" column="info_logo"/>
+        <result property="infoPublisherLogo" column="info_publisher_logo"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectSysInfoVo">
+        select info_id, info_issn, info_name, info_simple_name, info_comment,
+               info_mission, info_impact_factor, info_founded_year, info_publisher,
+               info_website, info_email, info_phone, info_address, info_logo,
+               info_publisher_logo, create_by, create_time, update_by, update_time, remark
+        from sys_info
+    </sql>
+
+    <select id="selectSysInfoList" parameterType="SysInfo" resultMap="SysInfoResult">
+        <include refid="selectSysInfoVo"/>
+        <where>
+            <if test="infoIssn != null and infoIssn != ''">
+                AND info_issn like concat('%', #{infoIssn}, '%')
+            </if>
+            <if test="infoName != null and infoName != ''">
+                AND info_name like concat('%', #{infoName}, '%')
+            </if>
+        </where>
+        order by info_id asc
+    </select>
+
+    <select id="selectSysInfoById" parameterType="Long" resultMap="SysInfoResult">
+        <include refid="selectSysInfoVo"/>
+        where info_id = #{infoId}
+    </select>
+
+    <insert id="insertSysInfo" parameterType="SysInfo" useGeneratedKeys="true" keyProperty="infoId">
+        insert into sys_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="infoIssn != null and infoIssn != ''">info_issn,</if>
+            <if test="infoName != null and infoName != ''">info_name,</if>
+            <if test="infoSimpleName != null">info_simple_name,</if>
+            <if test="infoComment != null and infoComment != ''">info_comment,</if>
+            <if test="infoMission != null">info_mission,</if>
+            <if test="infoImpactFactor != null">info_impact_factor,</if>
+            <if test="infoFoundedYear != null">info_founded_year,</if>
+            <if test="infoPublisher != null">info_publisher,</if>
+            <if test="infoWebsite != null">info_website,</if>
+            <if test="infoEmail != null">info_email,</if>
+            <if test="infoPhone != null">info_phone,</if>
+            <if test="infoAddress != null">info_address,</if>
+            <if test="infoLogo != null">info_logo,</if>
+            <if test="infoPublisherLogo != null">info_publisher_logo,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="infoIssn != null and infoIssn != ''">#{infoIssn},</if>
+            <if test="infoName != null and infoName != ''">#{infoName},</if>
+            <if test="infoSimpleName != null">#{infoSimpleName},</if>
+            <if test="infoComment != null and infoComment != ''">#{infoComment},</if>
+            <if test="infoMission != null">#{infoMission},</if>
+            <if test="infoImpactFactor != null">#{infoImpactFactor},</if>
+            <if test="infoFoundedYear != null">#{infoFoundedYear},</if>
+            <if test="infoPublisher != null">#{infoPublisher},</if>
+            <if test="infoWebsite != null">#{infoWebsite},</if>
+            <if test="infoEmail != null">#{infoEmail},</if>
+            <if test="infoPhone != null">#{infoPhone},</if>
+            <if test="infoAddress != null">#{infoAddress},</if>
+            <if test="infoLogo != null">#{infoLogo},</if>
+            <if test="infoPublisherLogo != null">#{infoPublisherLogo},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysInfo" parameterType="SysInfo">
+        update sys_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="infoIssn != null and infoIssn != ''">info_issn = #{infoIssn},</if>
+            <if test="infoName != null and infoName != ''">info_name = #{infoName},</if>
+            <if test="infoSimpleName != null">info_simple_name = #{infoSimpleName},</if>
+            <if test="infoComment != null and infoComment != ''">info_comment = #{infoComment},</if>
+            <if test="infoMission != null">info_mission = #{infoMission},</if>
+            <if test="infoImpactFactor != null">info_impact_factor = #{infoImpactFactor},</if>
+            <if test="infoFoundedYear != null">info_founded_year = #{infoFoundedYear},</if>
+            <if test="infoPublisher != null">info_publisher = #{infoPublisher},</if>
+            <if test="infoWebsite != null">info_website = #{infoWebsite},</if>
+            <if test="infoEmail != null">info_email = #{infoEmail},</if>
+            <if test="infoPhone != null">info_phone = #{infoPhone},</if>
+            <if test="infoAddress != null">info_address = #{infoAddress},</if>
+            <if test="infoLogo != null">info_logo = #{infoLogo},</if>
+            <if test="infoPublisherLogo != null">info_publisher_logo = #{infoPublisherLogo},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where info_id = #{infoId}
+    </update>
+
+    <delete id="deleteSysInfoById" parameterType="Long">
+        delete from sys_info where info_id = #{infoId}
+    </delete>
+
+    <delete id="deleteSysInfoByIds" parameterType="String">
+        delete from sys_info where info_id in
+        <foreach item="infoId" collection="infoIds" open="(" separator="," close=")">
+            #{infoId}
+        </foreach>
+    </delete>
+
+</mapper>

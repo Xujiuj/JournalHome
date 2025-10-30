@@ -1,0 +1,4 @@
+const journalInfo = {
+    infoComment: String,
+
+}

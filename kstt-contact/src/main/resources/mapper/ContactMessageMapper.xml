@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.contact.mapper.ContactMessageMapper">
+    
+    <resultMap type="ContactMessage" id="ContactMessageResult">
+        <id property="messageId" column="message_id"/>
+        <result property="messageName" column="message_name"/>
+        <result property="messageEmail" column="message_email"/>
+        <result property="messageSubject" column="message_subject"/>
+        <result property="messageContent" column="message_content"/>
+        <result property="messageStatus" column="message_status"/>
+        <result property="messageReply" column="message_reply"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectContactMessageVo">
+        select message_id, message_name, message_email, message_subject, message_content,
+               message_status, message_reply, create_by, create_time, update_by, update_time, remark
+        from contact_message
+    </sql>
+
+    <select id="selectContactMessageList" parameterType="ContactMessage" resultMap="ContactMessageResult">
+        <include refid="selectContactMessageVo"/>
+        <where>
+            <if test="messageName != null  and messageName != ''"> and message_name like concat('%', #{messageName}, '%')</if>
+            <if test="messageEmail != null  and messageEmail != ''"> and message_email like concat('%', #{messageEmail}, '%')</if>
+            <if test="messageSubject != null  and messageSubject != ''"> and message_subject like concat('%', #{messageSubject}, '%')</if>
+            <if test="messageStatus != null "> and message_status = #{messageStatus}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectContactMessageByMessageId" parameterType="Long" resultMap="ContactMessageResult">
+        <include refid="selectContactMessageVo"/>
+        where message_id = #{messageId}
+    </select>
+
+    <insert id="insertContactMessage" parameterType="ContactMessage" useGeneratedKeys="true" keyProperty="messageId">
+        insert into contact_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="messageName != null and messageName != ''">message_name,</if>
+            <if test="messageEmail != null and messageEmail != ''">message_email,</if>
+            <if test="messageSubject != null and messageSubject != ''">message_subject,</if>
+            <if test="messageContent != null and messageContent != ''">message_content,</if>
+            <if test="messageStatus != null">message_status,</if>
+            <if test="messageReply != null">message_reply,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="messageName != null and messageName != ''">#{messageName},</if>
+            <if test="messageEmail != null and messageEmail != ''">#{messageEmail},</if>
+            <if test="messageSubject != null and messageSubject != ''">#{messageSubject},</if>
+            <if test="messageContent != null and messageContent != ''">#{messageContent},</if>
+            <if test="messageStatus != null">#{messageStatus},</if>
+            <if test="messageReply != null">#{messageReply},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContactMessage" parameterType="ContactMessage">
+        update contact_message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="messageName != null and messageName != ''">message_name = #{messageName},</if>
+            <if test="messageEmail != null and messageEmail != ''">message_email = #{messageEmail},</if>
+            <if test="messageSubject != null and messageSubject != ''">message_subject = #{messageSubject},</if>
+            <if test="messageContent != null and messageContent != ''">message_content = #{messageContent},</if>
+            <if test="messageStatus != null">message_status = #{messageStatus},</if>
+            <if test="messageReply != null">message_reply = #{messageReply},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where message_id = #{messageId}
+    </update>
+
+    <delete id="deleteContactMessageById" parameterType="Long">
+        delete from contact_message where message_id = #{messageId}
+    </delete>
+
+    <delete id="deleteContactMessageByIds" parameterType="String">
+        delete from contact_message where message_id in 
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.articles.mapper.ArticleOpposedReviewerMapper">
+
+    <resultMap type="com.kstt.articles.entity.ArticleOpposedReviewer" id="ArticleOpposedReviewerResult">
+        <result property="id"    column="opposed_id"    />
+        <result property="articleId"    column="opposed_article_id"    />
+        <result property="reviewerUserId"    column="opposed_user_id"    />
+        <result property="reason"    column="opposed_reason"    />
+        <result property="createBy"    column="created_by"    />
+        <result property="createTime"    column="created_time"    />
+        <result property="updateBy"    column="updated_by"    />
+        <result property="updateTime"    column="updated_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="selectByArticleId" resultMap="ArticleOpposedReviewerResult">
+        select opposed_id, opposed_article_id, opposed_user_id, opposed_reason, created_by, created_time, updated_by, updated_time, remark
+        from article_opposed_reviewer
+        where opposed_article_id = #{articleId}
+        order by created_time desc
+    </select>
+
+    <select id="selectByReviewerUserId" resultMap="ArticleOpposedReviewerResult">
+        select opposed_id, opposed_article_id, opposed_user_id, opposed_reason, created_by, created_time, updated_by, updated_time, remark
+        from article_opposed_reviewer
+        where opposed_user_id = #{reviewerUserId}
+        order by created_time desc
+    </select>
+
+    <delete id="deleteByArticleId">
+        delete from article_opposed_reviewer where opposed_article_id = #{articleId}
+    </delete>
+
+    <insert id="batchInsert">
+        insert into article_opposed_reviewer
+        (opposed_article_id, opposed_user_id, opposed_reason, created_by, created_time, updated_by, updated_time, remark)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.articleId}, #{item.reviewerUserId}, #{item.reason}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime}, #{item.remark})
+        </foreach>
+    </insert>
+
+</mapper>

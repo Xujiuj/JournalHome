@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.articles.mapper.ArticleMapper">
+
+    <resultMap type="Article" id="ArticleResult">
+        <id property="articleId" column="article_id"/>
+        <result property="articleManuscriptId" column="article_manuscript_id"/>
+        <result property="articleTitle" column="article_title"/>
+        <result property="articleAbstract" column="article_abstract"/>
+        <result property="articleKeywords" column="article_keywords"/>
+        <result property="articleJournalId" column="article_journal_id"/>
+        <result property="articleManuscriptTypeId" column="article_manuscript_type_id"/>
+        <result property="articlePages" column="article_pages"/>
+        <result property="articleWordCount" column="article_word_count"/>
+        <result property="articleFigureCount" column="article_figure_count"/>
+        <result property="articleTableCount" column="article_table_count"/>
+        <result property="articleSubmitTime" column="article_submit_time"/>
+        <result property="articleAcceptTime" column="article_accept_time"/>
+        <result property="articlePublishTime" column="article_publish_time"/>
+        <result property="articleOnlineTime" column="article_online_time"/>
+        <result property="articleDoi" column="article_doi"/>
+        <result property="articlePdf" column="article_pdf"/>
+        <result property="articleStatusId" column="article_status_id"/>
+        <result property="articleManuscriptTypeId" column="article_manuscript_type_id"/>
+        <result property="articleSubmissionTypeId" column="article_submission_type_id"/>
+        <result property="articleCoverLetter" column="article_cover_letter"/>
+        <result property="articleTypeId" column="article_type_id"/>
+        <result property="articleIsOpenAccess" column="article_is_open_access"/>
+        <result property="articleSubjectAreas" column="article_subject_areas"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <!-- 关联查询 -->
+        <association property="journal" column="article_journal_id"
+                     select="com.kstt.journal.mapper.JournalMapper.selectJournalByJournalId"/>
+        <association property="articleStatus" column="article_status_id"
+                     select="com.kstt.articles.mapper.ArticleStatusMapper.selectStatusByStatusId"/>
+        <association property="articleManuscriptType" column="article_manuscript_type_id"
+                     select="com.kstt.articles.mapper.ArticleManuscriptTypeMapper.selectTypeByTypeId"/>
+        <association property="articleSubmissionType" column="article_submission_type_id"
+                     select="com.kstt.articles.mapper.ArticleSubmissionTypeMapper.selectTypeByTypeId"/>
+    </resultMap>
+
+    <sql id="selectArticleVo">
+        select article_id, article_manuscript_id, article_title, article_abstract, article_keywords,
+               article_manuscript_type_id, article_journal_id, article_pages, article_word_count,
+               article_figure_count, article_table_count, article_submit_time,
+               article_accept_time, article_publish_time, article_online_time, article_doi, article_pdf,
+               article_status_id, article_submission_type_id, article_cover_letter, article_type_id,
+               article_is_open_access, article_subject_areas,
+               create_by, create_time, update_by, update_time, remark
+        from article
+    </sql>
+
+    <select id="selectArticleList" parameterType="Article" resultMap="ArticleResult">
+        <include refid="selectArticleVo"/>
+        <where>
+            <if test="articleManuscriptId != null and articleManuscriptId != ''">
+                AND article_manuscript_id like concat('%', #{articleManuscriptId}, '%')
+            </if>
+            <if test="articleTitle != null and articleTitle != ''">
+                AND article_title like concat('%', #{articleTitle}, '%')
+            </if>
+            <if test="articleKeywords != null and articleKeywords != ''">
+                AND article_keywords like concat('%', #{articleKeywords}, '%')
+            </if>
+            <if test="articleJournalId != null">
+                AND article_journal_id = #{articleJournalId}
+            </if>
+            <if test="articleStatusId != null">
+                AND article_status_id = #{articleStatusId}
+            </if>
+            <if test="articleManuscriptTypeId != null">
+                AND article_manuscript_type_id = #{articleManuscriptTypeId}
+            </if>
+            <if test="articleSubmitTime != null">
+                AND date(article_submit_time) = date(#{articleSubmitTime})
+            </if>
+            <if test="articleAcceptTime != null">
+                AND date(article_accept_time) = date(#{articleAcceptTime})
+            </if>
+        </where>
+        order by article_publish_time desc, article_submit_time desc
+    </select>
+
+    <select id="selectArticleByPaperId" parameterType="Long" resultMap="ArticleResult">
+        <include refid="selectArticleVo"/>
+        where article_id = #{paperId}
+    </select>
+
+    <select id="selectArticleByManuscriptId" parameterType="String" resultMap="ArticleResult">
+        <include refid="selectArticleVo"/>
+        where article_manuscript_id = #{manuscriptId}
+    </select>
+
+    <insert id="insertArticle" parameterType="Article" useGeneratedKeys="true" keyProperty="articleId">
+        insert into article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="articleManuscriptId != null and articleManuscriptId != ''">article_manuscript_id,</if>
+            <if test="articleTitle != null and articleTitle != ''">article_title,</if>
+            <if test="articleAbstract != null">article_abstract,</if>
+            <if test="articleKeywords != null">article_keywords,</if>
+            <if test="articleManuscriptTypeId != null">article_manuscript_type_id,</if>
+            <if test="articleJournalId != null">article_journal_id,</if>
+            <if test="articlePages != null">article_pages,</if>
+            <if test="articleWordCount != null">article_word_count,</if>
+            <if test="articleFigureCount != null">article_figure_count,</if>
+            <if test="articleTableCount != null">article_table_count,</if>
+            <if test="articleSubmitTime != null">article_submit_time,</if>
+            <if test="articleAcceptTime != null">article_accept_time,</if>
+            <if test="articlePublishTime != null">article_publish_time,</if>
+            <if test="articleOnlineTime != null">article_online_time,</if>
+            <if test="articleDoi != null">article_doi,</if>
+            <if test="articlePdf != null">article_pdf,</if>
+            <if test="articleStatusId != null">article_status_id,</if>
+            <if test="articleSubmissionTypeId != null">article_submission_type_id,</if>
+            <if test="articleCoverLetter != null">article_cover_letter,</if>
+            <if test="articleTypeId != null">article_type_id,</if>
+            <if test="articleIsOpenAccess != null">article_is_open_access,</if>
+            <if test="articleSubjectAreas != null">article_subject_areas,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="articleManuscriptId != null and articleManuscriptId != ''">#{articleManuscriptId},</if>
+            <if test="articleTitle != null and articleTitle != ''">#{articleTitle},</if>
+            <if test="articleAbstract != null">#{articleAbstract},</if>
+            <if test="articleKeywords != null">#{articleKeywords},</if>
+            <if test="articleManuscriptTypeId != null">#{articleManuscriptTypeId},</if>
+            <if test="articleJournalId != null">#{articleJournalId},</if>
+            <if test="articlePages != null">#{articlePages},</if>
+            <if test="articleWordCount != null">#{articleWordCount},</if>
+            <if test="articleFigureCount != null">#{articleFigureCount},</if>
+            <if test="articleTableCount != null">#{articleTableCount},</if>
+            <if test="articleSubmitTime != null">#{articleSubmitTime},</if>
+            <if test="articleAcceptTime != null">#{articleAcceptTime},</if>
+            <if test="articlePublishTime != null">#{articlePublishTime},</if>
+            <if test="articleOnlineTime != null">#{articleOnlineTime},</if>
+            <if test="articleDoi != null">#{articleDoi},</if>
+            <if test="articlePdf != null">#{articlePdf},</if>
+            <if test="articleStatusId != null">#{articleStatusId},</if>
+            <if test="articleSubmissionTypeId != null">#{articleSubmissionTypeId},</if>
+            <if test="articleCoverLetter != null">#{articleCoverLetter},</if>
+            <if test="articleTypeId != null">#{articleTypeId},</if>
+            <if test="articleIsOpenAccess != null">#{articleIsOpenAccess},</if>
+            <if test="articleSubjectAreas != null">#{articleSubjectAreas},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateArticle" parameterType="Article">
+        update article
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="articleManuscriptId != null and articleManuscriptId != ''">article_manuscript_id = #{articleManuscriptId},</if>
+            <if test="articleTitle != null and articleTitle != ''">article_title = #{articleTitle},</if>
+            <if test="articleAbstract != null">article_abstract = #{articleAbstract},</if>
+            <if test="articleKeywords != null">article_keywords = #{articleKeywords},</if>
+            <if test="articleManuscriptTypeId != null">article_manuscript_type_id = #{articleManuscriptTypeId},</if>
+            <if test="articleJournalId != null">article_journal_id = #{articleJournalId},</if>
+            <if test="articlePages != null">article_pages = #{articlePages},</if>
+            <if test="articleWordCount != null">article_word_count = #{articleWordCount},</if>
+            <if test="articleFigureCount != null">article_figure_count = #{articleFigureCount},</if>
+            <if test="articleTableCount != null">article_table_count = #{articleTableCount},</if>
+            <if test="articleSubmitTime != null">article_submit_time = #{articleSubmitTime},</if>
+            <if test="articleAcceptTime != null">article_accept_time = #{articleAcceptTime},</if>
+            <if test="articlePublishTime != null">article_publish_time = #{articlePublishTime},</if>
+            <if test="articleOnlineTime != null">article_online_time = #{articleOnlineTime},</if>
+            <if test="articleDoi != null">article_doi = #{articleDoi},</if>
+            <if test="articlePdf != null">article_pdf = #{articlePdf},</if>
+            <if test="articleStatusId != null">article_status_id = #{articleStatusId},</if>
+            <if test="articleSubmissionTypeId != null">article_submission_type_id = #{articleSubmissionTypeId},</if>
+            <if test="articleCoverLetter != null">article_cover_letter = #{articleCoverLetter},</if>
+            <if test="articleTypeId != null">article_type_id = #{articleTypeId},</if>
+            <if test="articleIsOpenAccess != null">article_is_open_access = #{articleIsOpenAccess},</if>
+            <if test="articleSubjectAreas != null">article_subject_areas = #{articleSubjectAreas},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where article_id = #{articleId}
+    </update>
+
+    <delete id="deleteArticleById" parameterType="Long">
+        delete from article where article_id = #{paperId}
+    </delete>
+
+    <delete id="deleteArticleByIds" parameterType="String">
+        delete from article where article_id in
+        <foreach item="paperId" collection="paperIds" open="(" separator="," close=")">
+            #{paperId}
+        </foreach>
+    </delete>
+
+    <select id="countByJournalIds" resultType="com.kstt.articles.dto.JournalArticleCount">
+        select article_journal_id as journalId, count(*) as articleCount
+        from article
+        where article_journal_id is not null
+        <if test="journalIds != null and journalIds.size > 0">
+            and article_journal_id in
+            <foreach item="journalId" collection="journalIds" open="(" separator="," close=")">
+                #{journalId}
+            </foreach>
+        </if>
+        group by article_journal_id
+    </select>
+
+    <select id="selectArticleLastList" resultType="com.kstt.articles.entity.Article">
+        select a.* from article a
+        where a.article_status_id = 5
+        order by a.article_publish_time desc
+        limit #{limits}
+    </select>
+</mapper>

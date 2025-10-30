@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.articles.mapper.ArticleReviewMapper">
+    
+    <resultMap type="ArticleReview" id="ArticleReviewResult">
+        <id property="reviewId" column="review_id"/>
+        <result property="reviewInvitationId" column="review_invitation_id"/>
+        <result property="reviewRating" column="review_rating"/>
+        <result property="reviewRecommendation" column="review_recommendation"/>
+        <result property="reviewCommentsEditor" column="review_comments_editor"/>
+        <result property="reviewCommentsAuthor" column="review_comments_author"/>
+        <result property="reviewSubmitTime" column="review_submit_time"/>
+        <result property="reviewStatus" column="review_status"/>
+        <result property="reviewQualityScore" column="review_quality_score"/>
+        <result property="reviewInnovationScore" column="review_innovation_score"/>
+        <result property="reviewClarityScore" column="review_clarity_score"/>
+        <result property="reviewSignificanceScore" column="review_significance_score"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectArticleReviewVo">
+        select review_id, review_invitation_id, review_rating, review_recommendation,
+               review_comments_editor, review_comments_author, review_submit_time,
+               review_status, review_quality_score, review_innovation_score,
+               review_clarity_score, review_significance_score,
+               create_by, create_time, update_by, update_time, remark
+        from article_review
+    </sql>
+
+    <select id="selectReviewList" parameterType="ArticleReview" resultMap="ArticleReviewResult">
+        <include refid="selectArticleReviewVo"/>
+        <where>
+            <if test="reviewInvitationId != null"> and review_invitation_id = #{reviewInvitationId}</if>
+            <if test="reviewStatus != null"> and review_status = #{reviewStatus}</if>
+            <if test="reviewRecommendation != null and reviewRecommendation != ''">
+                and review_recommendation = #{reviewRecommendation}
+            </if>
+        </where>
+        order by review_submit_time desc
+    </select>
+
+    <select id="selectReviewByReviewId" parameterType="Long" resultMap="ArticleReviewResult">
+        <include refid="selectArticleReviewVo"/>
+        where review_id = #{reviewId}
+    </select>
+
+    <insert id="insertReview" parameterType="ArticleReview" useGeneratedKeys="true" keyProperty="reviewId">
+        insert into article_review
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reviewInvitationId != null">review_invitation_id,</if>
+            <if test="reviewRating != null">review_rating,</if>
+            <if test="reviewRecommendation != null and reviewRecommendation != ''">review_recommendation,</if>
+            <if test="reviewCommentsEditor != null">review_comments_editor,</if>
+            <if test="reviewCommentsAuthor != null">review_comments_author,</if>
+            <if test="reviewSubmitTime != null">review_submit_time,</if>
+            <if test="reviewStatus != null">review_status,</if>
+            <if test="reviewQualityScore != null">review_quality_score,</if>
+            <if test="reviewInnovationScore != null">review_innovation_score,</if>
+            <if test="reviewClarityScore != null">review_clarity_score,</if>
+            <if test="reviewSignificanceScore != null">review_significance_score,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reviewInvitationId != null">#{reviewInvitationId},</if>
+            <if test="reviewRating != null">#{reviewRating},</if>
+            <if test="reviewRecommendation != null and reviewRecommendation != ''">#{reviewRecommendation},</if>
+            <if test="reviewCommentsEditor != null">#{reviewCommentsEditor},</if>
+            <if test="reviewCommentsAuthor != null">#{reviewCommentsAuthor},</if>
+            <if test="reviewSubmitTime != null">#{reviewSubmitTime},</if>
+            <if test="reviewStatus != null">#{reviewStatus},</if>
+            <if test="reviewQualityScore != null">#{reviewQualityScore},</if>
+            <if test="reviewInnovationScore != null">#{reviewInnovationScore},</if>
+            <if test="reviewClarityScore != null">#{reviewClarityScore},</if>
+            <if test="reviewSignificanceScore != null">#{reviewSignificanceScore},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateReview" parameterType="ArticleReview">
+        update article_review
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="reviewInvitationId != null">review_invitation_id = #{reviewInvitationId},</if>
+            <if test="reviewRating != null">review_rating = #{reviewRating},</if>
+            <if test="reviewRecommendation != null and reviewRecommendation != ''">review_recommendation = #{reviewRecommendation},</if>
+            <if test="reviewCommentsEditor != null">review_comments_editor = #{reviewCommentsEditor},</if>
+            <if test="reviewCommentsAuthor != null">review_comments_author = #{reviewCommentsAuthor},</if>
+            <if test="reviewSubmitTime != null">review_submit_time = #{reviewSubmitTime},</if>
+            <if test="reviewStatus != null">review_status = #{reviewStatus},</if>
+            <if test="reviewQualityScore != null">review_quality_score = #{reviewQualityScore},</if>
+            <if test="reviewInnovationScore != null">review_innovation_score = #{reviewInnovationScore},</if>
+            <if test="reviewClarityScore != null">review_clarity_score = #{reviewClarityScore},</if>
+            <if test="reviewSignificanceScore != null">review_significance_score = #{reviewSignificanceScore},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where review_id = #{reviewId}
+    </update>
+
+    <delete id="deleteReviewById" parameterType="Long">
+        delete from article_review where review_id = #{reviewId}
+    </delete>
+
+    <delete id="deleteReviewByIds" parameterType="String">
+        delete from article_review where review_id in 
+        <foreach item="reviewId" collection="array" open="(" separator="," close=")">
+            #{reviewId}
+        </foreach>
+    </delete>
+</mapper>

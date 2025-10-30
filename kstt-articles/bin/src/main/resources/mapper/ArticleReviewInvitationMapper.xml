@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.articles.mapper.ArticleReviewInvitationMapper">
+    
+    <resultMap type="ArticleReviewInvitation" id="ArticleReviewInvitationResult">
+        <id property="invitationId" column="invitation_id"/>
+        <result property="invitationProcessId" column="invitation_process_id"/>
+        <result property="invitationReviewerId" column="invitation_reviewer_id"/>
+        <result property="invitationRound" column="invitation_round"/>
+        <result property="invitationStatus" column="invitation_status"/>
+        <result property="invitationSentTime" column="invitation_sent_time"/>
+        <result property="invitationResponseTime" column="invitation_response_time"/>
+        <result property="invitationDueDate" column="invitation_due_date"/>
+        <result property="invitationNotes" column="invitation_notes"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectArticleReviewInvitationVo">
+        select invitation_id, invitation_process_id, invitation_reviewer_id, invitation_round,
+               invitation_status, invitation_sent_time, invitation_response_time,
+               invitation_due_date, invitation_notes, create_by, create_time,
+               update_by, update_time, remark
+        from article_review_invitation
+    </sql>
+
+    <select id="selectInvitationList" parameterType="ArticleReviewInvitation" resultMap="ArticleReviewInvitationResult">
+        <include refid="selectArticleReviewInvitationVo"/>
+        <where>
+            <if test="invitationProcessId != null"> and invitation_process_id = #{invitationProcessId}</if>
+            <if test="invitationReviewerId != null"> and invitation_reviewer_id = #{invitationReviewerId}</if>
+            <if test="invitationStatus != null and invitationStatus != ''">
+                and invitation_status = #{invitationStatus}
+            </if>
+        </where>
+        order by invitation_sent_time desc
+    </select>
+
+    <select id="selectInvitationByInvitationId" parameterType="Long" resultMap="ArticleReviewInvitationResult">
+        <include refid="selectArticleReviewInvitationVo"/>
+        where invitation_id = #{invitationId}
+    </select>
+
+    <insert id="insertInvitation" parameterType="ArticleReviewInvitation" useGeneratedKeys="true" keyProperty="invitationId">
+        insert into article_review_invitation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="invitationProcessId != null">invitation_process_id,</if>
+            <if test="invitationReviewerId != null">invitation_reviewer_id,</if>
+            <if test="invitationRound != null">invitation_round,</if>
+            <if test="invitationStatus != null and invitationStatus != ''">invitation_status,</if>
+            <if test="invitationSentTime != null">invitation_sent_time,</if>
+            <if test="invitationResponseTime != null">invitation_response_time,</if>
+            <if test="invitationDueDate != null">invitation_due_date,</if>
+            <if test="invitationNotes != null">invitation_notes,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="invitationProcessId != null">#{invitationProcessId},</if>
+            <if test="invitationReviewerId != null">#{invitationReviewerId},</if>
+            <if test="invitationRound != null">#{invitationRound},</if>
+            <if test="invitationStatus != null and invitationStatus != ''">#{invitationStatus},</if>
+            <if test="invitationSentTime != null">#{invitationSentTime},</if>
+            <if test="invitationResponseTime != null">#{invitationResponseTime},</if>
+            <if test="invitationDueDate != null">#{invitationDueDate},</if>
+            <if test="invitationNotes != null">#{invitationNotes},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateInvitation" parameterType="ArticleReviewInvitation">
+        update article_review_invitation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="invitationProcessId != null">invitation_process_id = #{invitationProcessId},</if>
+            <if test="invitationReviewerId != null">invitation_reviewer_id = #{invitationReviewerId},</if>
+            <if test="invitationRound != null">invitation_round = #{invitationRound},</if>
+            <if test="invitationStatus != null and invitationStatus != ''">invitation_status = #{invitationStatus},</if>
+            <if test="invitationSentTime != null">invitation_sent_time = #{invitationSentTime},</if>
+            <if test="invitationResponseTime != null">invitation_response_time = #{invitationResponseTime},</if>
+            <if test="invitationDueDate != null">invitation_due_date = #{invitationDueDate},</if>
+            <if test="invitationNotes != null">invitation_notes = #{invitationNotes},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where invitation_id = #{invitationId}
+    </update>
+
+    <update id="updateInvitationStatus">
+        update article_review_invitation
+        set invitation_status = #{status},
+            invitation_response_time = now(),
+            update_time = now()
+        where invitation_id = #{invitationId}
+    </update>
+
+    <delete id="deleteInvitationById" parameterType="Long">
+        delete from article_review_invitation where invitation_id = #{invitationId}
+    </delete>
+
+    <delete id="deleteInvitationByIds" parameterType="String">
+        delete from article_review_invitation where invitation_id in 
+        <foreach item="invitationId" collection="array" open="(" separator="," close=")">
+            #{invitationId}
+        </foreach>
+    </delete>
+</mapper>

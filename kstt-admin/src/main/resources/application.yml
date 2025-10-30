@@ -1,0 +1,218 @@
+spring:
+  application:
+    name: journal-management
+
+  # 数据源配置 - 主库
+  datasource:
+    master:
+      url: ${DB_MASTER_URL:jdbc:mysql://localhost:3306/journal?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true}
+      driver-class-name: ${DB_DRIVER:com.mysql.cj.jdbc.Driver}
+      username: ${DB_MASTER_USERNAME:root}
+      password: ${DB_MASTER_PASSWORD:test0000}
+      hikari:
+        pool-name: JournalMasterPool
+        maximum-pool-size: ${DB_MASTER_POOL_MAX:50}
+        minimum-idle: ${DB_MASTER_POOL_MIN:10}
+        idle-timeout: 600000
+        connection-timeout: 30000
+        max-lifetime: 1800000
+        validation-timeout: 5000
+        leak-detection-threshold: 60000
+        connection-test-query: SELECT 1
+        auto-commit: true
+
+    slave:
+      url: ${DB_SLAVE_URL:${DB_MASTER_URL:jdbc:mysql://localhost:3306/journal?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true}}
+      driver-class-name: ${DB_SLAVE_DRIVER:${DB_DRIVER:com.mysql.cj.jdbc.Driver}}
+      username: ${DB_SLAVE_USERNAME:${DB_MASTER_USERNAME:root}}
+      password: ${DB_SLAVE_PASSWORD:${DB_MASTER_PASSWORD:test0000}}
+      hikari:
+        pool-name: JournalSlavePool
+        maximum-pool-size: ${DB_SLAVE_POOL_MAX:50}
+        minimum-idle: ${DB_SLAVE_POOL_MIN:10}
+        idle-timeout: 600000
+        connection-timeout: 30000
+        max-lifetime: 1800000
+        validation-timeout: 5000
+        leak-detection-threshold: 60000
+        connection-test-query: SELECT 1
+        read-only: true
+        auto-commit: true
+
+  # JPA 配置
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+
+  # Redis 缓存配置
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1800000  # 30分钟
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: ${REDIS_DB:0}
+    lettuce:
+      pool:
+        max-active: 32
+        max-idle: 16
+        min-idle: 4
+        time-between-eviction-runs: 60000
+
+  # RabbitMQ 配置
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: ${RABBITMQ_VHOST:/}
+    template:
+      mandatory: true
+    publisher-confirm-type: correlated
+    publisher-returns: true
+
+  # CORS 跨域配置
+  web:
+    cors:
+      allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+      allowed-headers: '*'
+      allow-credentials: true
+
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+# 服务器配置
+server:
+  port: ${SERVER_PORT:10086}
+  address: 0.0.0.0
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.kstt.*.entity
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# JWT 安全配置
+jwt:
+  secret: ${JWT_SECRET:journal-management-system-secret-key-for-jwt-token-generation}
+  expiration: ${JWT_EXPIRATION:86400}  # 默认24小时
+
+# Swagger/OpenAPI 配置
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    try-it-out-enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    filter: true
+    display-request-duration: true
+    display-operation-id: false
+    default-models-expand-depth: 1
+    default-model-expand-depth: 1
+    doc-expansion: none
+    validator-url: ''
+
+# 日志配置
+logging:
+  level:
+    root: info
+    com.kstt: ${LOG_LEVEL:info}
+    com.kstt.admin.aspect.ApiRequestLogAspect: ${API_LOG_LEVEL:info}
+    org.springframework.web: warn
+    org.springframework.security: warn
+    org.springframework.boot: warn
+    org.springframework.jdbc.core: ${SQL_LOG_LEVEL:warn}
+    com.baomidou.mybatisplus: warn
+  config: classpath:logback-spring.xml
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n'
+  file:
+    name: logs/journal-admin.log
+    max-size: 100MB
+    max-history: 30
+    total-size-cap: 3GB
+
+# 监控端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers
+  endpoint:
+    health:
+      show-details: when-authorized
+    loggers:
+      enabled: true
+
+# 应用自定义配置
+app:
+  # 缓存配置
+  cache:
+    names:
+      sys-info: sysInfo
+      sys-role: sysRole
+      sys-menu: sysMenu
+      sys-area: sysArea
+      sys-subject: sysSubject
+      article-status: articleStatus
+      manuscript-type: manuscriptType
+      submission-type: submissionType
+      faq: faq
+    ttl:
+      default: 30m
+      sys-info: 1h
+      sys-role: 30m
+      sys-menu: 1h
+      sys-area: 2h
+      sys-subject: 2h
+      article-status: 2h
+      manuscript-type: 2h
+      submission-type: 2h
+      faq: 1h
+
+  # RabbitMQ 队列配置
+  rabbitmq:
+    article-status:
+      exchange: journal.article.status.exchange
+      queue: journal.article.status.queue
+      routing-key: article.status.changed
+      durable: true
+
+  # 数据源配置
+  datasource:
+    read-methods:
+      - select
+      - get
+      - find
+      - query
+      - count
+      - list
+      - page
+
+  # 性能监控配置
+  performance:
+    slow-threshold-ms: ${SLOW_THRESHOLD:1000}
+    very-slow-threshold-ms: ${VERY_SLOW_THRESHOLD:3000}
+    enable-method-monitor: ${ENABLE_PERF_MONITOR:true}
+    enable-api-log: ${ENABLE_API_LOG:true}
+

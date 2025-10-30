@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.sys.mapper.SysMenuMapper">
+    <resultMap type="SysMenu" id="SysMenuResult">
+        <result property="menuId" column="menu_id"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="menuParentId" column="menu_parent_id"/>
+        <result property="menuOrderNum" column="menu_order_num"/>
+        <result property="menuPath" column="menu_path"/>
+        <result property="menuComponent" column="menu_component"/>
+        <result property="menuType" column="menu_type"/>
+        <result property="menuVisible" column="menu_visible"/>
+        <result property="menuStatus" column="menu_status"/>
+        <result property="menuPerms" column="menu_perms"/>
+        <result property="menuIcon" column="menu_icon"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectSysMenuVo">
+        select menu_id,
+               menu_name,
+               menu_parent_id,
+               menu_order_num,
+               menu_path,
+               menu_component,
+               menu_type,
+               menu_visible,
+               menu_status,
+               menu_perms,
+               menu_icon,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from sys_menu
+    </sql>
+
+    <select id="selectMenuList" parameterType="SysMenu" resultMap="SysMenuResult">
+        <include refid="selectSysMenuVo"/>
+        <where>
+            <if test="menuName != null  and menuName != ''">
+                and menu_name like concat('%', #{menuName}, '%')
+            </if>
+            <if test="menuParentId != null ">
+                and menu_parent_id = #{menuParentId}
+            </if>
+            <if test="menuOrderNum != null ">
+                and menu_order_num = #{menuOrderNum}
+            </if>
+            <if test="menuPath != null  and menuPath != ''">
+                and menu_path = #{menuPath}
+            </if>
+            <if test="menuComponent != null  and menuComponent != ''">
+                and menu_component = #{menuComponent}
+            </if>
+            <if test="menuType != null  and menuType != ''">
+                and menu_type = #{menuType}
+            </if>
+            <if test="menuVisible != null ">
+                and menu_visible = #{menuVisible}
+            </if>
+            <if test="menuStatus != null ">
+                and menu_status = #{menuStatus}
+            </if>
+            <if test="menuPerms != null  and menuPerms != ''">
+                and menu_perms = #{menuPerms}
+            </if>
+            <if test="menuIcon != null  and menuIcon != ''">
+                and menu_icon = #{menuIcon}
+            </if>
+        </where>
+        order by menu_parent_id, menu_order_num
+    </select>
+
+    <select id="selectMenuByMenuId" parameterType="Long" resultMap="SysMenuResult">
+        <include refid="selectSysMenuVo"/>
+        where menu_id = #{menuId}
+    </select>
+
+    <insert id="insertMenu" parameterType="SysMenu">
+        insert into sys_menus
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="menuId != null">
+                menu_id,
+            </if>
+            <if test="menuName != null and menuName != ''">
+                menu_name,
+            </if>
+            <if test="menuParentId != null">
+                menu_parent_id,
+            </if>
+            <if test="menuOrderNum != null">
+                menu_order_num,
+            </if>
+            <if test="menuPath != null and menuPath != ''">
+                menu_path,
+            </if>
+            <if test="menuComponent != null and menuComponent != ''">
+                menu_component,
+            </if>
+            <if test="menuType != null and menuType != ''">
+                menu_type,
+            </if>
+            <if test="menuVisible != null">
+                menu_visible,
+            </if>
+            <if test="menuStatus != null">
+                menu_status,
+            </if>
+            <if test="menuPerms != null">
+                menu_perms,
+            </if>
+            <if test="menuIcon != null">
+                menu_icon,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="menuId != null">
+                #{menuId},
+            </if>
+            <if test="menuName != null and menuName != ''">
+                #{menuName},
+            </if>
+            <if test="menuParentId != null">
+                #{menuParentId},
+            </if>
+            <if test="menuOrderNum != null">
+                #{menuOrderNum},
+            </if>
+            <if test="menuPath != null and menuPath != ''">
+                #{menuPath},
+            </if>
+            <if test="menuComponent != null and menuComponent != ''">
+                #{menuComponent},
+            </if>
+            <if test="menuType != null and menuType != ''">
+                #{menuType},
+            </if>
+            <if test="menuVisible != null">
+                #{menuVisible},
+            </if>
+            <if test="menuStatus != null">
+                #{menuStatus},
+            </if>
+            <if test="menuPerms != null">
+                #{menuPerms},
+            </if>
+            <if test="menuIcon != null">
+                #{menuIcon},
+            </if>
+            <if test="createBy != null">
+                #{createBy},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="remark != null">
+                #{remark},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateMenu" parameterType="SysMenu">
+        update sys_menus
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="menuName != null and menuName != ''">
+                menu_name = #{menuName},
+            </if>
+            <if test="menuParentId != null">
+                menu_parent_id = #{menuParentId},
+            </if>
+            <if test="menuOrderNum != null">
+                menu_order_num = #{menuOrderNum},
+            </if>
+            <if test="menuPath != null and menuPath != ''">
+                menu_path = #{menuPath},
+            </if>
+            <if test="menuComponent != null and menuComponent != ''">
+                menu_component = #{menuComponent},
+            </if>
+            <if test="menuType != null and menuType != ''">
+                menu_type = #{menuType},
+            </if>
+            <if test="menuVisible != null">
+                menu_visible = #{menuVisible},
+            </if>
+            <if test="menuStatus != null">
+                menu_status = #{menuStatus},
+            </if>
+            <if test="menuPerms != null">
+                menu_perms = #{menuPerms},
+            </if>
+            <if test="menuIcon != null">
+                menu_icon = #{menuIcon},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+        </trim>
+        where menu_id = #{menuId}
+    </update>
+
+    <delete id="deleteMenuByMenuId" parameterType="Long">
+        delete
+        from sys_menu
+        where menu_id = #{menuId}
+    </delete>
+
+    <delete id="deleteMenuByMenuIds" parameterType="String">
+        delete from sys_menu where menu_id in
+        <foreach item="menuId" collection="array" open="(" separator="," close=")">
+            #{menuId}
+        </foreach>
+    </delete>
+</mapper>

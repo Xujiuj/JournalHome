@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.articles.mapper.ArticleKeywordsMapper">
+    
+    <resultMap type="ArticleKeywords" id="ArticleKeywordsResult">
+        <id property="keywordId"    column="keyword_id"    />
+        <result property="articleId"    column="keyword_article_id"    />
+        <result property="keyword"    column="keyword"    />
+        <result property="sortOrder"    column="keyword_sort_order"    />
+        <result property="createdBy"    column="created_by"    />
+        <result property="createdTime"    column="created_time"    />
+    </resultMap>
+
+    <sql id="selectArticleKeywordsVo">
+        select keyword_id, keyword_article_id, keyword, keyword_sort_order, created_by, created_time 
+        from article_keywords
+    </sql>
+
+    <select id="selectKeywordList" parameterType="ArticleKeywords" resultMap="ArticleKeywordsResult">
+        <include refid="selectArticleKeywordsVo"/>
+        <where>  
+            <if test="articleId != null "> and keyword_article_id = #{articleId}</if>
+            <if test="keyword != null  and keyword != ''"> and keyword like concat('%', #{keyword}, '%')</if>
+        </where>
+        order by keyword_sort_order asc, created_time desc
+    </select>
+    
+    <select id="selectKeywordByKeywordId" parameterType="Long" resultMap="ArticleKeywordsResult">
+        <include refid="selectArticleKeywordsVo"/>
+        where keyword_id = #{keywordId}
+    </select>
+    
+    <select id="selectKeywordsByArticleId" parameterType="Long" resultMap="ArticleKeywordsResult">
+        <include refid="selectArticleKeywordsVo"/>
+        where keyword_article_id = #{articleId}
+        order by keyword_sort_order asc, created_time desc
+    </select>
+        
+    <insert id="insertKeyword" parameterType="ArticleKeywords" useGeneratedKeys="true" keyProperty="keywordId">
+        insert into article_keywords
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="articleId != null">keyword_article_id,</if>
+            <if test="keyword != null and keyword != ''">keyword,</if>
+            <if test="sortOrder != null">keyword_sort_order,</if>
+            <if test="createdBy != null">created_by,</if>
+            <if test="createdTime != null">created_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="articleId != null">#{articleId},</if>
+            <if test="keyword != null and keyword != ''">#{keyword},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="createdBy != null">#{createdBy},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKeyword" parameterType="ArticleKeywords">
+        update article_keywords
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="articleId != null">keyword_article_id = #{articleId},</if>
+            <if test="keyword != null and keyword != ''">keyword = #{keyword},</if>
+            <if test="sortOrder != null">keyword_sort_order = #{sortOrder},</if>
+            <if test="createdBy != null">created_by = #{createdBy},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+        </trim>
+        where keyword_id = #{keywordId}
+    </update>
+
+    <delete id="deleteKeywordById" parameterType="Long">
+        delete from article_keywords where keyword_id = #{keywordId}
+    </delete>
+
+    <delete id="deleteKeywordByIds" parameterType="String">
+        delete from article_keywords where keyword_id in 
+        <foreach item="keywordId" collection="array" open="(" separator="," close=")">
+            #{keywordId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteKeywordsByArticleId" parameterType="Long">
+        delete from article_keywords where keyword_article_id = #{articleId}
+    </delete>
+</mapper>
+

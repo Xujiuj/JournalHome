@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.sys.mapper.SysUserAcademicDegreeMapper">
+
+    <resultMap type="SysUserAcademicDegree" id="SysUserAcademicDegreeResult">
+        <id property="degreeId" column="degree_id"/>
+        <result property="degreeName" column="degree_name"/>
+        <result property="degreeLevel" column="degree_level"/>
+        <result property="sortOrder" column="sort_order"/>
+    </resultMap>
+
+    <sql id="selectSysUserAcademicDegreeVo">
+        select degree_id, degree_name, degree_level, sort_order
+        from sys_user_academic_degree
+    </sql>
+
+    <select id="selectDegreeByDegreeId" parameterType="Integer" resultMap="SysUserAcademicDegreeResult">
+        <include refid="selectSysUserAcademicDegreeVo"/>
+        where degree_id = #{degreeId}
+    </select>
+
+    <select id="selectDegreeList" parameterType="SysUserAcademicDegree" resultMap="SysUserAcademicDegreeResult">
+        <include refid="selectSysUserAcademicDegreeVo"/>
+        <where>
+            <if test="degreeName != null and degreeName != ''">
+                AND degree_name like concat('%', #{degreeName}, '%')
+            </if>
+            <if test="degreeLevel != null and degreeLevel != ''">
+                AND degree_level = #{degreeLevel}
+            </if>
+        </where>
+        order by sort_order
+    </select>
+
+</mapper>

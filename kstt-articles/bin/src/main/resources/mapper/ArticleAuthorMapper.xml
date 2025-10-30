@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kstt.articles.mapper.ArticleAuthorMapper">
+    
+    <resultMap type="ArticleAuthor" id="ArticleAuthorResult">
+        <id property="authorId" column="author_id"/>
+        <result property="authorArticleId" column="author_article_id"/>
+        <result property="authorUserId" column="author_user_id"/>
+        <result property="authorOrder" column="author_order"/>
+        <result property="authorIsCorresponding" column="author_is_corresponding"/>
+        <result property="authorContribution" column="author_contribution"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectArticleAuthorVo">
+        select *
+        from article_author
+    </sql>
+
+    <select id="selectAuthorList" parameterType="ArticleAuthor" resultMap="ArticleAuthorResult">
+        <include refid="selectArticleAuthorVo"/>
+        <where>  
+            <if test="authorArticleId != null "> and author_article_id = #{authorArticleId}</if>
+            <if test="authorUserId != null "> and author_user_id = #{authorUserId}</if>
+            <if test="authorIsCorresponding != null "> and author_is_corresponding = #{authorIsCorresponding}</if>
+        </where>
+        order by author_order, create_time
+    </select>
+    
+    <select id="selectAuthorByAuthorId" parameterType="Long" resultMap="ArticleAuthorResult">
+        <include refid="selectArticleAuthorVo"/>
+        where author_id = #{authorId}
+    </select>
+    
+    <select id="selectAuthorsByArticleId" parameterType="Long" resultMap="ArticleAuthorResult">
+        <include refid="selectArticleAuthorVo"/>
+        where author_article_id = #{articleId}
+        order by author_order, create_time
+    </select>
+
+    <select id="selectAuthorsByArticleIds" resultMap="ArticleAuthorResult">
+        <include refid="selectArticleAuthorVo"/>
+        where author_article_id in
+        <foreach collection="articleIds" item="articleId" open="(" separator="," close=")">
+            #{articleId}
+        </foreach>
+        order by author_article_id, author_order, create_time
+    </select>
+        
+    <insert id="insertAuthor" parameterType="ArticleAuthor" useGeneratedKeys="true" keyProperty="authorId">
+        insert into article_author
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="authorArticleId != null">author_article_id,</if>
+            <if test="authorUserId != null">author_user_id,</if>
+            <if test="authorOrder != null">author_order,</if>
+            <if test="authorIsCorresponding != null">author_is_corresponding,</if>
+            <if test="authorContribution != null">author_contribution,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="authorArticleId != null">#{authorArticleId},</if>
+            <if test="authorUserId != null">#{authorUserId},</if>
+            <if test="authorOrder != null">#{authorOrder},</if>
+            <if test="authorIsCorresponding != null">#{authorIsCorresponding},</if>
+            <if test="authorContribution != null">#{authorContribution},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAuthor" parameterType="ArticleAuthor">
+        update article_author
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="authorArticleId != null">author_article_id = #{authorArticleId},</if>
+            <if test="authorUserId != null">author_user_id = #{authorUserId},</if>
+            <if test="authorOrder != null">author_order = #{authorOrder},</if>
+            <if test="authorIsCorresponding != null">author_is_corresponding = #{authorIsCorresponding},</if>
+            <if test="authorContribution != null">author_contribution = #{authorContribution},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where author_id = #{authorId}
+    </update>
+
+    <delete id="deleteAuthorById" parameterType="Long">
+        delete from article_author where author_id = #{authorId}
+    </delete>
+
+    <delete id="deleteAuthorByIds" parameterType="String">
+        delete from article_author where author_id in 
+        <foreach item="authorId" collection="array" open="(" separator="," close=")">
+            #{authorId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteAuthorsByArticleId" parameterType="Long">
+        delete from article_author where author_article_id = #{articleId}
+    </delete>
+</mapper>
