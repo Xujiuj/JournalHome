@@ -1,5 +1,5 @@
 <template>
-  <PageScaffold :show-progress="true" :meteor-count="25">
+  <PageScaffold :show-progress="true" :meteor-count="25" background-type="dark">
     <div class="about min-h-screen relative overflow-hidden">
       <!-- Hero Section -->
       <section class="hero-section relative z-10 flex items-center justify-center bg-transparent" style="height: 100vh;">

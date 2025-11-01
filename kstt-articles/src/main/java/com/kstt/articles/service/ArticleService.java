@@ -76,4 +76,9 @@ public interface ArticleService extends IService<Article> {
     Map<Long, Long> countByJournalIds(List<Long> journalIds);
 
     List<Article> selectArticleLastList(Integer limits);
+
+     /**
+      * 生成稿件编号
+      */
+     String generateManuscriptId();
 }

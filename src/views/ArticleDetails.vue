@@ -901,7 +901,3 @@ onMounted(() => {
   fetchArticle()
 })
 </script>
-
-<style scoped>
-@import '../assets/css/article-details.css';
-</style>

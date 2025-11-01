@@ -66,9 +66,11 @@ export const resetDynamicRoutes = () => {
 
 export default router
 
-// Simple auth guard for submission pages
+const PROTECTED_ROUTES = ['/submit', '/my-submissions']
+
+// Simple auth guard for submission-related pages
 router.beforeEach((to, from, next) => {
-  const requiresAuth = ['/submit', '/my-submissions'].includes(to.path)
+  const requiresAuth = PROTECTED_ROUTES.some((path) => to.path === path || to.path.startsWith(`${path}/`))
   if (!requiresAuth) return next()
   const token = localStorage.getItem('token')
   if (token) return next()

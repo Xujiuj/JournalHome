@@ -1,5 +1,5 @@
 <template>
-  <PageScaffold :show-progress="true" :meteor-count="25">
+  <PageScaffold :show-progress="true" :meteor-count="25" background-type="gradient">
     <div class="home min-h-screen relative overflow-hidden">
       <!-- Hero Section -->
       <section class="hero-section relative z-10 flex items-start justify-center bg-transparent" style="height: 90vh;">
@@ -55,8 +55,10 @@
         </div>
       </section>
 
+      <!-- 下方板块统一背景区域 -->
+      <div class="relative z-10 bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900">
       <!-- Recent Publications Section -->
-      <section class="recent-publications-section relative z-10 bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-sm py-20">
+      <section class="recent-publications-section relative z-10 py-20">
         <div class="container mx-auto px-4">
           <div class="text-center mb-16 animate-fade-in">
             <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4 font-serif">Recent Publications</h2>
@@ -65,7 +67,7 @@
           <div class="space-y-4 mb-12 max-w-4xl mx-auto">
             <div v-if="isLoadingFeatured" class="text-center py-12">
               <div class="inline-flex items-center gap-3 text-white">
-                <div class="w-6 h-6 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+                <div class="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
                 <span>正在加载最新文章...</span>
               </div>
             </div>
@@ -163,7 +165,7 @@
               </article>
 
               <div v-if="featuredArticles.length === 0" class="text-center py-12 text-slate-300">
-                暂无最新文章，敬请期待。
+                <p class="text-slate-300">暂无最新文章，敬请期待。</p>
               </div>
             </template>
           </div>
@@ -185,7 +187,7 @@
       </section>
 
       <!-- Recent Notices Section -->
-      <section class="relative z-10 bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-sm py-20">
+      <section class="relative z-10 py-20">
         <div class="container mx-auto px-4">
           <div class="text-center mb-16 animate-fade-in">
             <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4 font-serif">Recent Notices</h2>
@@ -246,9 +248,13 @@
             </template>
           </div>
           <div class="text-center">
-            <button class="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white rounded-full font-semibold text-lg hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 hover:shadow-2xl transition-all duration-700 ease-out overflow-hidden">
+            <button
+                class="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white rounded-full font-semibold text-lg hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 hover:shadow-2xl transition-all duration-700 ease-out overflow-hidden"
+                @click="goToNotices"
+                type="button"
+            >
               <svg class="w-5 h-5 transition-transform duration-500 ease-out group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6zM4 5h6V1H4v4zM10 3h4v4h-4V3z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
               </svg>
               View All Notices
               <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-400 opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
@@ -259,12 +265,12 @@
       </section>
 
       <!-- CTA Section -->
-      <section class="relative z-10 bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-sm py-20">
+      <section class="relative z-10 py-20">
         <div class="container mx-auto px-4">
           <div class="text-center max-w-3xl mx-auto animate-fade-in">
             <h2 class="text-3xl lg:text-4xl font-bold text-white mb-6 font-serif">Ready to Share Your Research?</h2>
             <p class="text-lg text-slate-300 leading-relaxed mb-8">Join thousands of researchers publishing with us. Fast review process, global reach, and open access options available.</p>
-            <button class="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-slate-700 via-slate-800 to-slate-900 text-white rounded-full font-semibold text-lg hover:from-slate-800 hover:via-slate-900 hover:to-black hover:shadow-2xl transition-all duration-700 ease-out overflow-hidden shadow-elegant">
+            <button @click="goToSubmit" class="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-slate-700 via-slate-800 to-slate-900 text-white rounded-full font-semibold text-lg hover:from-slate-800 hover:via-slate-900 hover:to-black hover:shadow-2xl transition-all duration-700 ease-out overflow-hidden shadow-elegant">
               <svg class="w-5 h-5 transition-transform duration-500 ease-out group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
@@ -275,6 +281,7 @@
           </div>
         </div>
       </section>
+      </div>
 
       <!-- Sticky Banner -->
       <div v-if="showStickyBanner" class="fixed right-6 top-1/2 transform -translate-y-1/2 z-50 hidden lg:block">
@@ -386,12 +393,15 @@ const goToArticles = () => {
   router.push(ROUTES.articles)
 }
 
+const goToNotices = () => {
+  router.push(ROUTES.notices)
+}
+
 const copyArticleCitation = async (article) => {
   const year = article?.articleSubmitTime ? new Date(article.articleSubmitTime).getFullYear() : new Date().getFullYear()
   const citation = `${getAuthorNames(article?.articleAuthors)}. "${article?.articleTitle}". ${citationJournal.value} (${year}).`
   try {
     await navigator.clipboard.writeText(citation)
-    console.log('Citation copied to clipboard:', citation)
   } catch (error) {
     console.error('Failed to copy citation:', error)
   }
@@ -539,8 +549,3 @@ onUnmounted(() => {
   window.removeEventListener('wheel', handleWheel)
 })
 </script>
-
-<style>
-@import '../assets/css/article-cards.css';
-@import '../assets/css/utilities.css';
-</style>

@@ -1,5 +1,9 @@
 package com.kstt.admin.service.mail;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
 /**
  * 邮件服务接口
  */
@@ -45,5 +49,19 @@ public interface EmailService {
     void sendArticleSubmissionEmail(String articleTitle, String manuscriptId,
                                      String submitterName, String submitterEmail,
                                      String submitTime);
+
+    /**
+     * 发送投稿确认邮件（带附件）
+     *
+     * @param articleTitle   文章标题
+     * @param manuscriptId   稿件编号
+     * @param submitterName  投稿人姓名
+     * @param submitterEmail 投稿人邮箱（当前登录用户）
+     * @param submitTime     投稿时间
+     * @param attachments    附件列表
+     */
+    void sendArticleSubmissionEmailWithAttachment(String articleTitle, String manuscriptId,
+                                                  String submitterName, String submitterEmail,
+                                                  String submitTime, List<MultipartFile> attachments);
 }
 

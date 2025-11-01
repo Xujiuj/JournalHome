@@ -176,18 +176,18 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
         return articleMapper.insertArticle(article);
     }
-    
+
     /**
      * Generate manuscript ID in format: JST-YYYY-NNNN
      * e.g., JST-2025-0001, JST-2025-0002, etc.
      */
-    private String generateManuscriptId() {
+    public String generateManuscriptId() {
         int currentYear = LocalDate.now().getYear();
-        
+
         // Find the max sequence number for the current year
         String pattern = "JST-" + currentYear + "-%";
         List<Article> articles = articleMapper.selectByManuscriptIdPattern(pattern);
-        
+
         int maxSeq = 0;
         for (Article article : articles) {
             String manuscriptId = article.getArticleManuscriptId();
@@ -202,11 +202,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 }
             }
         }
-        
+
         // Generate next sequence number (4 digits)
         int nextSeq = maxSeq + 1;
         String seqStr = String.format("%04d", nextSeq);
-        
+
         return "JST-" + currentYear + "-" + seqStr;
     }
     

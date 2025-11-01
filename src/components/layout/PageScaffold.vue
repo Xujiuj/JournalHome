@@ -1,11 +1,11 @@
 <template>
-  <div :class="['page-scaffold', gradientClass, 'min-h-screen relative overflow-hidden']">
+  <div :class="['page-scaffold', 'min-h-screen relative overflow-hidden', backgroundClass]">
+    <!-- 流星特效容器 -->
     <div
-      v-if="showBackground"
-      class="fixed inset-0 w-full h-full overflow-hidden pointer-events-none z-0"
+      v-if="meteors"
+      class="meteor-container fixed inset-0 overflow-hidden pointer-events-none z-0"
     >
-      <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-blue-900/90"></div>
-      <Meteors v-if="meteors" :number="meteorCount" />
+      <Meteors :number="meteorCount" />
     </div>
 
     <div
@@ -32,17 +32,9 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import Meteors from '@/components/Meteors.vue'
 
 const props = defineProps({
-  gradientClass: {
-    type: String,
-    default: 'bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900'
-  },
   showProgress: {
     type: Boolean,
     default: false
-  },
-  showBackground: {
-    type: Boolean,
-    default: true
   },
   meteors: {
     type: Boolean,
@@ -51,6 +43,26 @@ const props = defineProps({
   meteorCount: {
     type: Number,
     default: 25
+  },
+  // 背景类型：'white' (与Article页面一致), 'dark' (深色), 'gradient' (渐变), 'transparent' (透明)
+  backgroundType: {
+    type: String,
+    default: 'white'
+  }
+})
+
+// 根据背景类型设置类名
+const backgroundClass = computed(() => {
+  switch (props.backgroundType) {
+    case 'dark':
+      return 'page-background-dark'
+    case 'gradient':
+      return 'page-background-gradient'
+    case 'transparent':
+      return 'page-background-transparent'
+    case 'white':
+    default:
+      return 'page-background-white'
   }
 })
 
@@ -93,7 +105,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.page-scaffold {
-  transition: background 0.3s ease;
-}
+@import '@/assets/css/background.css';
+</style>
+<style>
+/* 流星特效样式需要全局作用域 */
+@import '@/assets/css/effects.css';
 </style>

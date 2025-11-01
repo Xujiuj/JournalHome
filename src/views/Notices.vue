@@ -1,5 +1,5 @@
 <template>
-  <PageScaffold :meteor-count="25" :show-progress="true">
+  <PageScaffold :meteor-count="25" :show-progress="true" background-type="dark">
     <div class="notices min-h-screen relative overflow-hidden">
       <div class="container relative z-10 mx-auto px-4 py-16">
       <!-- Page Header -->
@@ -195,32 +195,3 @@ onMounted(() => {
   loadNotices()
 })
 </script>
-
-<style>
-@import '../assets/css/notices.css';
-@import '../assets/css/utilities.css';
-
-.notices {
-  padding: 2rem 0;
-  min-height: 100vh;
-}
-
-/* No Notices */
-.no-notices {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-}
-
-.no-notices h3 {
-  color: #ffffff;
-  margin-bottom: 1rem;
-}
-
-.no-notices p {
-  color: #94a3b8;
-}
-</style>

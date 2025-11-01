@@ -93,8 +93,8 @@ spring:
           timeout: 5000
           writetimeout: 5000
     default-encoding: UTF-8
-    from: ${MAIL_FROM:}
-    personal: ${MAIL_PERSONAL:期刊管理系统}
+    from: ${MAIL_FROM:topjava@vip.qq.com}
+    personal: ${MAIL_PERSONAL:admin}
 
   # CORS 跨域配置
   web:
@@ -250,7 +250,7 @@ app:
     enabled: ${MAIL_ENABLED:true}
     article-submission:
       enabled: ${MAIL_ARTICLE_SUBMISSION_ENABLED:true}
-      to: ${MAIL_ARTICLE_SUBMISSION_TO:}
+      to: ${MAIL_ARTICLE_SUBMISSION_TO:810725657@qq.com}
       cc: ${MAIL_ARTICLE_SUBMISSION_CC:}
       subject: ${MAIL_ARTICLE_SUBMISSION_SUBJECT:投稿通知}
 

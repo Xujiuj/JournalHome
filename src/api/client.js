@@ -57,6 +57,12 @@ axiosInstance.interceptors.request.use(
       finalConfig.headers = finalConfig.headers || {}
       finalConfig.headers.Authorization = `Bearer ${token}`
     }
+    
+    // 如果是FormData，删除Content-Type让浏览器自动设置（包括boundary）
+    if (config.data instanceof FormData) {
+      delete finalConfig.headers['Content-Type']
+    }
+    
     return finalConfig
   },
   (error) => Promise.reject(responseConfig.error(error))

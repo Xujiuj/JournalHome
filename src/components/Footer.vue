@@ -91,7 +91,3 @@ const quickLinks = computed(() =>
   )
 )
 </script>
-
-<style>
-@import '../assets/css/footer.css';
-</style>

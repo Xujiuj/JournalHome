@@ -1,5 +1,5 @@
 <template>
-  <PageScaffold :meteor-count="25">
+  <PageScaffold :meteor-count="25" background-type="dark">
     <div class="container mx-auto px-4 py-12 relative z-10">
       <!-- Breadcrumb Navigation -->
       <nav class="mb-8 pt-4" aria-label="Breadcrumb">
@@ -25,7 +25,7 @@
         <!-- Glow effect background -->
         <div class="absolute -inset-4 bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-700 rounded-3xl opacity-20 blur-3xl group-hover:opacity-30 transition-opacity"></div>
         
-        <div class="relative bg-gradient-to-br from-slate-900/98 via-slate-800/98 to-slate-900/98 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-slate-700/50 overflow-hidden">
+        <div class="relative bg-gradient-to-br from-slate-900/98 via-blue-900/98 to-indigo-900/98 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-cyan-500/50 overflow-hidden">
           <!-- Animated background gradient -->
           <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-blue-600/5 to-indigo-700/5"></div>
           

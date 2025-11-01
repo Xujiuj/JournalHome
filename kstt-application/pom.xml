@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>kstt-application</artifactId>
-    <name>kstt-application</name>
+    <name>KSTT Application Module</name>
     <packaging>jar</packaging>
 
     <dependencies>

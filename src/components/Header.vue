@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <header class="sticky top-0 z-50 bg-white dark:bg-slate-900 shadow-sm border-b border-slate-200 dark:border-slate-700">
     <!-- Main Header Bar -->
     <div class="bg-white dark:bg-slate-900 py-3 min-h-[64px]">
@@ -25,22 +25,24 @@
             </div>
           </div>
           
-          <!-- Right: Search and Auth --> 
+          <!-- Right: Search and Auth -->
           <div class="flex items-center gap-4">
             <!-- Search Box -->
-            <div class="transform transition-transform duration-300 hover:scale-110 origin-center">
-            <GlowingSearchBox
-              v-model="searchQuery"
-              placeholder="Search Articles"
-              @search="performSearch"
-            />
+            <div class="transform transition-transform duration-300 hover:scale-105 origin-center">
+              <GlowingSearchBox
+                  v-model="searchQuery"
+                  placeholder="Search Articles"
+                  @search="performSearch"
+              />
             </div>
             
             <!-- Auth Section -->
             <div class="flex items-center gap-3">
               <!-- User Avatar & Menu (when logged in) -->
-              <div v-if="currentUser" ref="userMenuRef" class="relative group" @mouseenter="toggleUserMenu" @mouseleave="toggleUserMenu">
+              <div v-if="currentUser" ref="userMenuRef" class="relative group">
                 <button
+                  @click="toggleUserMenu"
+                  type="button"
                   class="flex items-center gap-3 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 transform hover:scale-110"
                 >
                   <!-- User Avatar -->
@@ -59,11 +61,14 @@
                 </button>
 
                 <!-- User Dropdown Menu -->
-                <div
-                  v-show="isUserMenuOpen"
-                  class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-99"
-                  style="animation: dropdownSlideDown 0.3s ease-out forwards;"
-                >
+                <teleport to="body">
+                  <transition name="dropdown">
+                    <div
+                        v-if="isUserMenuOpen"
+                        ref="dropdownMenuRef"
+                        class="fixed w-64 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-[9999] overflow-y-auto"
+                        :style="dropdownStyle"
+                    >
                   <!-- User Info Header -->
                   <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                     <div class="flex items-center gap-3">
@@ -114,7 +119,9 @@
                       </button>
                     </div>
                   </div>
-                </div>
+                    </div>
+                  </transition>
+                </teleport>
               </div>
 
               <!-- Login/Register Buttons (when not logged in) -->
@@ -145,13 +152,14 @@
     </div>
 
     <!-- Navigation Bar -->
-    <nav class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 relative z-50">
+    <nav class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 relative z-30">
       <div class="container mx-auto px-4">
         <div class="flex items-center justify-center gap-0">
           <router-link 
             v-for="item in navItems" 
             :key="item.menuName"
             :to="item.menuPath"
+            @click="handleNavClick(item, $event)"
             class="nav-link-gemini group relative px-5 py-3 text-slate-700 dark:text-slate-300 text-sm font-medium transition duration-300 transform origin-center hover:scale-105 hover:text-slate-900 dark:hover:text-slate-100"
             :class="{ 'text-slate-900 dark:text-slate-100': $route.path === item.menuPath }"
           >
@@ -175,7 +183,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import GlowingSearchBox from '@/components/ui/GlowingSearchBox.vue'
@@ -188,6 +196,7 @@ const ROUTES = Object.freeze({
   register: '/register',
   login: '/login'
 })
+const PROTECTED_ROUTES = ['/submit', '/my-submissions']
 
 // 从 Vuex 获取系统信息和菜单
 const branding = computed(() => store.getters['sysInfo/brandingInfo'])
@@ -205,7 +214,7 @@ const brandInitial = computed(() => {
   return source.charAt(0).toUpperCase()
 })
 
-// 从 Vuex 获取用户信息
+// 浠?Vuex 鑾峰彇鐢ㄦ埛淇℃伅
 const currentUser = computed(() => store.getters['user/currentUser'])
 const userMenus = computed(() => {
   const menus = store.getters['sysInfo/getMenuList'] || []
@@ -217,6 +226,91 @@ const userMenus = computed(() => {
 // 用户下拉菜单状态
 const isUserMenuOpen = ref(false)
 const userMenuRef = ref(null)
+const dropdownMenuRef = ref(null)
+const dropdownStyle = ref({})
+const isToggling = ref(false) // 标记正在切换状态
+
+// 更新下拉框位置
+const updateDropdownPosition = () => {
+  if (!userMenuRef.value) {
+    dropdownStyle.value = {}
+    return
+  }
+  
+  nextTick(() => {
+    if (!userMenuRef.value) return
+    
+    const rect = userMenuRef.value.getBoundingClientRect()
+    const dropdownWidth = 256 // w-64 = 256px
+    const margin = 16 // 间距
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    
+    // 下拉框右边缘对齐头像右边缘
+    let right = viewportWidth - rect.right
+    let left = null
+    
+    // 检查右对齐是否会导致超出左侧边界
+    // right 是从右边缘到视口右边缘的距离，所以如果 right 很大，说明头像在左侧
+    const leftPosition = rect.right - dropdownWidth // 如果用右对齐，左边缘的位置
+    
+    if (leftPosition < margin) {
+      // 如果右对齐会导致超出左侧，改为左对齐
+      left = Math.max(rect.left, margin)
+      right = null
+      
+      // 确保左对齐不会超出右侧
+      if (left + dropdownWidth > viewportWidth - margin) {
+        left = viewportWidth - dropdownWidth - margin
+      }
+    } else {
+      // 可以右对齐，确保不会超出右侧边界
+      if (rect.right > viewportWidth - margin) {
+        right = margin
+      }
+    }
+    
+    // 计算垂直位置
+    let top = rect.bottom + 8
+    const dropdownHeight = 200 // 估算下拉框高度
+    if (top + dropdownHeight > viewportHeight - margin) {
+      top = Math.max(rect.top - dropdownHeight - 8, margin)
+    }
+    
+    const style = {
+      top: `${top}px`,
+      maxHeight: `${Math.min(viewportHeight - top - margin - 20, 400)}px`
+    }
+    
+    if (left !== null) {
+      style.left = `${left}px`
+    }
+    if (right !== null) {
+      style.right = `${right}px`
+    }
+    
+    // Center align to avatar and ensure left-based positioning
+    const centerX = rect.left + rect.width / 2
+    const computedLeft = Math.max(margin, Math.min(centerX - dropdownWidth / 2, viewportWidth - dropdownWidth - margin))
+    style.left = `${computedLeft}px`
+    style.right = null
+    
+    dropdownStyle.value = style
+  })
+}
+
+// 监听菜单打开状态，更新位置
+watch(isUserMenuOpen, (newVal) => {
+  if (newVal) {
+    updateDropdownPosition()
+    // 监听窗口大小变化和滚动，更新位置
+    window.addEventListener('resize', updateDropdownPosition)
+    window.addEventListener('scroll', updateDropdownPosition, true)
+  } else {
+    window.removeEventListener('resize', updateDropdownPosition)
+    window.removeEventListener('scroll', updateDropdownPosition, true)
+  }
+})
 
 // Methods
 const performSearch = () => {
@@ -225,8 +319,50 @@ const performSearch = () => {
   }
 }
 
-const toggleUserMenu = () => {
+const requiresAuthRoute = (path = '') => {
+  if (!path) return false
+  return PROTECTED_ROUTES.some((route) => path === route || path.startsWith(`${route}/`))
+}
+
+const handleNavClick = (item, event) => {
+  const targetPath = item?.menuPath?.trim?.()
+  if (!targetPath) {
+    return
+  }
+
+  const isExternal = /^https?:\/\//i.test(targetPath)
+  if (isExternal) {
+    return
+  }
+
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+
+  if (requiresAuthRoute(targetPath)) {
+    const token = localStorage.getItem('token')
+    if (token) {
+      router.push(targetPath)
+    } else {
+      router.push({ path: ROUTES.login, query: { redirect: targetPath } })
+    }
+  } else {
+    router.push(targetPath)
+  }
+}
+
+const toggleUserMenu = (event) => {
+  // 阻止事件冒泡，防止立即触发 closeUserMenu
+  if (event) {
+    event.stopPropagation()
+  }
+  isToggling.value = true
   isUserMenuOpen.value = !isUserMenuOpen.value
+  // 短暂延迟后重置标志，允许外部点击检查
+  setTimeout(() => {
+    isToggling.value = false
+  }, 100)
 }
 
 const handleLogout = async () => {
@@ -241,31 +377,55 @@ const handleLogout = async () => {
 
 // 点击外部关闭菜单
 const closeUserMenu = (event) => {
-  if (userMenuRef.value && !userMenuRef.value.contains(event.target)) {
+  // 如果正在切换状态，忽略此次点击
+  if (isToggling.value) {
+    return
+  }
+  
+  // 检查点击的目标是否在用户菜单容器或下拉菜单内
+  if (!event || !event.target) return
+  
+  const clickedInside = 
+    (userMenuRef.value && userMenuRef.value.contains(event.target)) ||
+    (dropdownMenuRef.value && dropdownMenuRef.value.contains(event.target))
+  
+  if (!clickedInside && isUserMenuOpen.value) {
     isUserMenuOpen.value = false
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', closeUserMenu)
+  // 使用捕获阶段为 false，确保元素上的事件处理器先执行
+  document.addEventListener('click', closeUserMenu, false)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', closeUserMenu)
+  window.removeEventListener('resize', updateDropdownPosition)
+  window.removeEventListener('scroll', updateDropdownPosition, true)
 })
 </script>
 
-<style>
-@import '../assets/css/header.css';
+<style scoped>
+/* 下拉框动画 - 从上到下弹出 */
+.dropdown-enter-active {
+  animation: dropdownSlideDown 0.22s ease-out;
+  transform-origin: top center;
+}
+
+.dropdown-leave-active {
+  animation: dropdownSlideDown 0.18s ease-in reverse;
+  transform-origin: top center;
+}
 
 @keyframes dropdownSlideDown {
   from {
     opacity: 0;
-    transform: translate(-50%, -10px) scale(0.95);
+    transform: translateY(-6px) scaleY(0.96);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, 0) scale(1);
+    transform: translateY(0) scaleY(1);
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <PageScaffold :show-progress="true" :meteor-count="10">
+  <PageScaffold :show-progress="true" :meteor-count="10" background-type="dark">
     <div class="min-h-screen bg-white dark:bg-slate-900 py-10">
       <div class="container mx-auto px-4">
         <div class="mb-8 text-center">

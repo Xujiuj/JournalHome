@@ -1,5 +1,5 @@
 <template>
-  <PageScaffold :meteor-count="25">
+  <PageScaffold :meteor-count="25" background-type="dark">
     <div class="container mx-auto px-4 py-12 relative z-10">
       <!-- Breadcrumb Navigation -->
       <nav class="mb-8 pt-4" aria-label="Breadcrumb">
@@ -22,7 +22,7 @@
 
       <!-- Registration Form Container -->
       <div class="max-w-4xl mx-auto">
-        <div class="bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-amber-500/30">
+        <div class="bg-gradient-to-br from-slate-900/95 via-blue-900/95 to-indigo-900/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-cyan-500/30">
           <!-- Title -->
           <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-white mb-2">User Registration</h1>
@@ -70,7 +70,7 @@
                 <!-- Password -->
                 <div>
                   <label class="form-label">Password <span class="text-red-400">*</span></label>
-                  <input v-model="formData.userPassword" data-field="userPassword" type="password" autocomplete="new-password" required :class="['form-control', fieldErrors.userPassword && 'input-warning']" placeholder="At least 8 characters" />
+                  <input v-model="formData.userPassword" data-field="userPassword" type="password" autocomplete="new-password" required :class="['form-control', 'form-input', fieldErrors.userPassword && 'input-warning']" placeholder="At least 8 characters" />
                   <p class="form-help">Include letters and numbers</p>
                   <p v-if="fieldErrors.userPassword" class="form-help field-hint-warning">{{ fieldErrors.userPassword }}</p>
                 </div>
@@ -78,7 +78,7 @@
                 <!-- Confirm Password -->
                 <div>
                   <label class="form-label">Confirm Password <span class="text-red-400">*</span></label>
-                  <input v-model="formData.confirmPassword" data-field="confirmPassword" type="password" autocomplete="new-password" required :class="['form-control', fieldErrors.confirmPassword && 'input-warning']" placeholder="Re-enter password" />
+                  <input v-model="formData.confirmPassword" data-field="confirmPassword" type="password" autocomplete="new-password" required :class="['form-control', 'form-input', fieldErrors.confirmPassword && 'input-warning']" placeholder="Re-enter password" />
                   <p v-if="fieldErrors.confirmPassword" class="form-help field-hint-warning">{{ fieldErrors.confirmPassword }}</p>
                 </div>
 
@@ -92,7 +92,7 @@
                 <!-- Phone -->
                 <div>
                   <label class="form-label">Phone Number</label>
-                  <input v-model="formData.userPhone" type="tel" class="form-control" placeholder="+1 234 567 8900" />
+                  <input v-model="formData.userPhone" type="tel" class="form-control, form-input" placeholder="+1 234 567 8900" />
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@
                 <!-- Title -->
                 <div>
                   <label class="form-label">Academic Title</label>
-                  <select v-model="formData.userTitle" class="select cursor-pointer">
+                  <select v-model="formData.userTitle" class="select cursor-pointer bg-slate-800 border border-slate-600 top-1/2">
                     <option value="">Please select</option>
                     <option value="Professor">Professor</option>
                     <option value="Associate Professor">Associate Professor</option>
@@ -300,7 +300,7 @@
                 <!-- State/Province -->
                 <div>
                   <label class="form-label">State/Province</label>
-                  <select v-model="formData.userState" @change="onStateChange" :disabled="!selectedCountryCode" class="select cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                  <select v-model="formData.userState" @change="onStateChange" :disabled="!selectedCountryCode" class="form-input select cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
                     <option value="">Select state/province</option>
                     <option v-for="state in availableStates" :key="state.isoCode" :value="state.name">
                       {{ state.name }}
@@ -312,13 +312,13 @@
                 <!-- City -->
                 <div>
                   <label class="form-label">City</label>
-                  <select v-model="formData.userCity" :disabled="!selectedStateCode" class="select cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                  <select v-model="formData.userCity" :disabled="!selectedStateCode" class="select cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:font-white form-input">
                     <option value="">Select city</option>
                     <option v-for="city in availableCities" :key="city.name" :value="city.name">
                       {{ city.name }}
                     </option>
                   </select>
-                  <p v-if="!selectedStateCode" class="mt-1 text-xs text-slate-400">Please select state/province first</p>
+                  <p v-if="!selectedStateCode" class="form-help">Please select state/province first</p>
                 </div>
 
                 <!-- Postal Code -->
@@ -775,6 +775,7 @@ const handleRegister = async () => {
 </script>
 
 <style scoped>
+@import '../assets/css/forms.css';
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -793,8 +794,4 @@ const handleRegister = async () => {
   background: rgba(251, 191, 36, 0.7);
 }
 
-/* Harmonize labels with card style */
-.form-label {
-  color: #cbd5e1 !important; /* slate-300 */
-}
 </style>

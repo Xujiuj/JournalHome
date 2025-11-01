@@ -1,9 +1,9 @@
 <template>
-  <PageScaffold :meteor-count="25">
-    <section class="contact-page min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
+  <PageScaffold :meteor-count="25" background-type="dark">
+    <section class="contact-page min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900 text-white">
       <div class="container mx-auto px-4 py-16 space-y-12">
         <header class="text-center space-y-3">
-          <h1 class="text-3xl md:text-4xl font-serif font-bold">Contact Us</h1>
+          <h1 class="text-3xl md:text-4xl font-serif font-bold text-white leading-tight">Contact Us</h1>
           <p class="text-slate-300 max-w-2xl mx-auto">
           Get in touch with our editorial team. We're here to help you with your research journey.
         </p>
@@ -11,7 +11,7 @@
 
         <div class="grid gap-8 lg:grid-cols-2">
           <article class="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-6 md:p-8 shadow-lg space-y-6">
-            <h2 class="text-xl font-serif font-semibold">Editorial Contacts</h2>
+            <h2 class="text-xl font-serif font-semibold text-white leading-tight">Editorial Contacts</h2>
             <ul class="space-y-5">
               <li v-for="item in contactItems" :key="item.id" class="flex items-start gap-4">
                 <span class="flex h-9 w-9 items-center justify-center rounded-full bg-cyan-500/20 text-lg">{{ item.icon }}</span>
@@ -27,10 +27,10 @@
           </article>
 
           <article class="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-6 md:p-8 shadow-lg">
-            <h2 class="text-xl font-serif font-semibold mb-4">Send us a Message</h2>
+            <h2 class="text-xl font-serif font-semibold mb-4 text-white leading-tight">Send us a Message</h2>
             <form @submit.prevent="submitMessage" class="space-y-4">
               <div class="grid gap-4 sm:grid-cols-2">
-                <label class="space-y-2 text-sm font-semibold text-slate-200">
+                <label class="form-label">
                       Name <span class="text-red-400">*</span>
                     <input
                         v-model="form.name"
@@ -40,7 +40,7 @@
                     class="w-full rounded-lg border border-slate-600 bg-slate-800 px-4 py-2.5 text-white focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
                     />
                 </label>
-                <label class="space-y-2 text-sm font-semibold text-slate-200">
+                <label class="form-label">
                       Email <span class="text-red-400">*</span>
                     <input
                         v-model="form.email"
@@ -52,7 +52,7 @@
                 </label>
                 </div>
 
-              <label class="space-y-2 text-sm font-semibold text-slate-200">
+              <label class="form-label">
                      Phone
                   <input
                       v-model="form.phone"
@@ -62,7 +62,7 @@
                   />
               </label>
 
-              <label class="space-y-2 text-sm font-semibold text-slate-200">
+              <label class="form-label">
                      Subject <span class="text-red-400">*</span>
                   <input
                       v-model="form.subject"
@@ -73,7 +73,7 @@
                   />
               </label>
 
-              <label class="space-y-2 text-sm font-semibold text-slate-200">
+              <label class="form-label">
                      Message <span class="text-red-400">*</span>
                   <textarea
                       v-model="form.message"
@@ -262,6 +262,5 @@ onMounted(() => {
 </script>
 
 <style>
-@import '../assets/css/contact.css';
-@import '../assets/css/utilities.css';
+@import "../assets/css/forms.css";
 </style>
